@@ -1,0 +1,29 @@
+filters:
+  and:
+    - file.inFolder("papers/cards")
+    - type == "paper-card"
+properties:
+  paper_id:
+    displayName: Paper ID
+  title:
+    displayName: Title
+  status:
+    displayName: Status
+  year:
+    displayName: Year
+  alphaxiv:
+    displayName: AlphaXiv
+  file.mtime:
+    displayName: Updated
+views:
+  - type: table
+    name: Papers
+    order:
+      - paper_id
+      - title
+      - alphaxiv
+    sort:
+      - property: year
+        direction: ASC
+      - property: file.mtime
+        direction: ASC
