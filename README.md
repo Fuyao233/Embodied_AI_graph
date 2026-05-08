@@ -32,6 +32,10 @@ Use the scaffold script to create a matching paper card and note:
 Optional metadata can be filled during creation with `-Year`, `-Pdf`, and `-Code`.
 The script renders `templates/paper-card.md` and `templates/paper-note.md`, so those templates are the scaffold source of truth.
 
+
+
+
+
 ## Auditing Completeness
 Run the vault integrity checker from the repo root:
 
