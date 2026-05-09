@@ -4,6 +4,7 @@
 - `papers/cards/`: structured paper entry points
 - `papers/notes/`: freeform reading and implementation notes
 - `questions/`: open questions that own the graph edges
+- `insights/`: reusable claims backed by links, experiments, or work experience
 
 ## Operating Rules
 1. Create one card and one note for every new paper.
@@ -15,6 +16,7 @@
 7. Every note must link back to its card using `../cards/<paper_id>.md`.
 8. Every question must link only to `../papers/cards/<paper_id>.md`.
 9. Use `views/paper-view.md` for the paper table and Graph view for the big picture.
+10. Create insight notes from `templates/insight.md` or `scripts/new-insight.py`, and keep them scoped to a single claim.
 
 ## Naming Convention
 - Use lowercase `paper_id` values such as `pi05` and `pi06`.
@@ -22,15 +24,29 @@
 - Paper note filename: `papers/notes/<paper_id>-note.md`
 - Keep the displayed title human-readable, for example `PI0.5`.
 
+## Python Requirement
+- Install Python 3.8+ and make sure `python` works in your terminal from the repo root.
+
 ## Adding Papers
 Use the scaffold script to create a matching paper card and note:
 
 ```powershell
-.\scripts\new-paper.ps1 -PaperId pi07 -Title "PI0.7" -AlphaXiv "https://www.alphaxiv.org/overview/xxxx"
+python scripts/new-paper.py --paper-id pi07 --title "PI0.7" --alphaxiv "https://www.alphaxiv.org/overview/xxxx"
 ```
 
-Optional metadata can be filled during creation with `-Year`, `-Pdf`, and `-Code`.
+Optional metadata can be filled during creation with `--year`, `--pdf`, and `--code`.
 The script renders `templates/paper-card.md` and `templates/paper-note.md`, so those templates are the scaffold source of truth.
+
+## Adding Insights
+
+Use the insight scaffold script to create a working claim note:
+
+```powershell
+python scripts/new-insight.py --insight-id pretrain-not-fully-converged --claim "Pretraining need not fully converge for downstream performance"
+```
+
+The script renders `templates/insight.md`.
+Use the `## Evidence` section for paper links, experiment references, or concise work experience notes.
 
 
 
@@ -40,11 +56,18 @@ The script renders `templates/paper-card.md` and `templates/paper-note.md`, so t
 Run the vault integrity checker from the repo root:
 
 ```powershell
-.\scripts\check-vault.ps1
+python scripts/check-vault.py
 ```
 
 It verifies that every paper card has a matching note, every note has a matching card, card-note links are mutual, paper cards contain the required frontmatter for `views/paper-view.md`, and question files link only to canonical `../papers/cards/<paper_id>.md` targets.
 The script exits with `0` and prints `Vault check passed.` when no issues are found, or exits with `1` and prints the collected `[ERROR]` lines followed by `Vault check failed with <n> issue(s).`.
+
+## Running Tests
+Run the Python regression suite from the repo root:
+
+```powershell
+python -m unittest discover -s tests -p "test_*.py" -v
+```
 
 ## Obsidian Setup
 - Enable the Bases and Templates core plugins.

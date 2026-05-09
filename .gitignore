@@ -1,4 +1,6 @@
 .DS_Store
 Thumbs.db
 .obsidian/workspace.json
+__pycache__/
+*.py[cod]
 未命名.base

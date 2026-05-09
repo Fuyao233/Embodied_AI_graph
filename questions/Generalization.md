@@ -20,7 +20,7 @@ Generalization 决定机器人是否能从“会做训练集任务”走向“�
 - 泛化提升是否伴随可解释的机制，例如表示学习、世界建模或动作分解能力增强。
 
 ## Related Papers
-- 
+- [GR00T_N1](../papers/cards/gr00t-n1.md)：用embodiment-specific action tokenizer能够使得不同本体共用同一backbone
 
 ## Next Checks
 - 
