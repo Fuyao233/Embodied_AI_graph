@@ -48,7 +48,7 @@ AgiBot World 在数据规模上相比现有数据集实现了数量级的增长�
 
 **数采流程**
 
-<img src="C:\Users\s-robots050\AppData\Roaming\Typora\typora-user-images\image-20260509165406542.png" alt="image-20260509165406542" style="zoom:50%;" />
+<img src="D:\Embodied_AI_graph\papers\notes\agibot-world-note.assets\image-20260509165406542.png" alt="image-20260509165406542" style="zoom:50%;" />
 
 1. 在正式开始数据采集之前，我们首先进行初步数据采集，以验证各项任务的可行性并建立相应的采集标准：大致分为以下几类
 
@@ -86,7 +86,7 @@ AgiBot World 在数据规模上相比现有数据集实现了数量级的增长�
 
 AgiBot World 的开发基于一个占地超过 4000 平方米的大型数据采集设施。这个庞大的环境包含 3000 多个独特的物体，分布在各种精心设计的场景中，旨在模拟真实世界环境。该数据集涵盖了广泛的场景和设置，确保了规模和多样性，从而有助于构建可泛化的机器人策略，并重现真实世界的多样性。
 
-![image-20260509170411210](C:\Users\s-robots050\AppData\Roaming\Typora\typora-user-images\image-20260509170411210.png)
+![image-20260509170411210](D:\Embodied_AI_graph\papers\notes\agibot-world-note.assets\image-20260509170411210.png)
 
 
 
@@ -128,7 +128,7 @@ AgiBot World 的开发基于一个占地超过 4000 平方米的大型数据采�
 
 **GO-1**
 
-![image-20260509172124140](C:\Users\s-robots050\AppData\Roaming\Typora\typora-user-images\image-20260509172124140.png)
+![image-20260509172124140](D:\Embodied_AI_graph\papers\notes\agibot-world-note.assets\image-20260509172124140.png)
 
 
 

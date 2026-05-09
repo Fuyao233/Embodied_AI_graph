@@ -1,12 +1,12 @@
 ---
 type: paper-card
 paper_id: starvla
-title: starVLA
+title: "StarVLA: A Lego-like Codebase for Vision-Language-Action Model Developing"
 status: seed
-year: 
+year:
 alphaxiv: https://alphaxiv.org/html/2604.05014v1
-pdf: 
-code: 
+pdf:
+code:
 created: 2026-05-07
 ---
 

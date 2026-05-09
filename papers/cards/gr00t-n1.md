@@ -1,12 +1,12 @@
 ---
 type: paper-card
 paper_id: gr00t-n1
-title: GR00T-N1
+title: "GR00T N1: An Open Foundation Model for Generalist Humanoid Robots"
 status: seed
-year: 
+year:
 alphaxiv: https://www.alphaxiv.org/abs/2503.14734
-pdf: 
-code: 
+pdf:
+code:
 created: 2026-05-09
 ---
 
