@@ -34,7 +34,7 @@ pi06：使用（迭代的）离线强化学习方法，对整个 VLA 模型进�
 
 预训练的时候包括步骤2&3，后续训练包括所有步骤
 
-**Data collection: **
+#### **Data collection**
 
 运行VLA做任务，并且打标签，同时可选提供一些人类介入的轨迹
 
@@ -42,7 +42,11 @@ pi06：使用（迭代的）离线强化学习方法，对整个 VLA 模型进�
 
 
 
-**Value function training**
+#### **Value function training**
+
+采用和
+
+
 
 用上一步收集的数据训练一个多任务的value function
 
@@ -63,7 +67,8 @@ $C_{\text{fail}}$是一个很大的数。所以累积reward可以直接反映任
 
 value function的输出$p_{\phi}(V|o_t,l)\in[-1,0]$, 间隔是$\frac 1 {200}$, 监督信号$R_t(\tau)$需要归一化然后离散为201维的向量$R^B_t(\tau)$（具体是hard on-hot还是插值论文没具体说），然后用cross-entropy训练
 $$
-\min _\phi \mathbb E_{\tau\in D}[\sum_{o_t\in \tau}H(R_t^B(\tau),p_\phi(V|o_t,l))]
+\min _\phi \mathbb E_{\tau\in D}[\sum_{o_t\in \tau}H(R_t^B(\tau),p_\phi(V|o_t,l))] \\
+R_t = \sum_{t=t'}^T r_{t'} \; (\text{MC estimation})
 $$
 输出时，
 $$
@@ -77,7 +82,7 @@ $v(b)$是bin对应的值
 
 
 
-**Advantage conditioned training**
+#### **Advantage conditioned training**
 
 value function 根据prefix给出轨迹是否足够优，根据这个作为条件训练VLA
 
@@ -91,7 +96,7 @@ policy extraction: 利用现有的价值函数训练一个改进策略，需要�
 
 
 
-现存一些方法及问题：
+**现存一些方法及问题**：
 
 - 策略梯度：flow matching model不会输出动作分布，所以很难适配
 - AWR：加权学习，即基于advantage赋予权重，没办法利用坏数据
@@ -105,6 +110,74 @@ $$
 \text{where,\;}
 I_t = \mathbf{1}\left(A^{\pi_{\text{ref}}}(o_t, a_t, \ell) > \epsilon_\ell\right).
 $$
+
+**$I_t$融合：**根据示性函数结果将“Advantage: positive”或者“Advantage: negative”作为额外文本输入VLA
+
+**Advantage 计算**：n-step advantage（论文中后训练时N=50，预训练为了省计算直接用的whole-episode, $A^\pi(o_t, a_t) =  \sum_{t'=t}^{T} r_{t'}  - V^\pi(o_t)$）
+$$
+A^\pi(o_t, a_t) = \mathbb{E}\left[ \sum_{t'=t}^{t+N-1} r_{t'} + V^\pi(o_{t+N}) \right] - V^\pi(o_t)
+$$
+**目标函数分析**：
+
+- $\log \pi_\theta(a_t \mid o_t, \ell)$ 是为了保留参考策略
+- $\log \pi_\theta(a_t \mid I_t, o_t, \ell)$ 是为了让模型学习 $I_t$ 和策略的关系，能够判断出哪些是好的策略
+
+
+
+Inference的时候设置 $I_t=\text{positve}$
+
+
+
+**关于$V^{\pi_\text{ref}}$**：这个 $\pi_\text{ref}$ 在预训练的时候是演示轨迹，在后训练的时候是demonstrations 和 learned policy return 的加权混合
+
+**$\alpha$的选择**：实际训练中并没有这个 $\alpha$，而是通过 $30\%$ 可能 drop 掉 $I_t$ 实现的
+
+**$\epsilon_l$的选择**：在预训练阶段，我们为每个任务选择阈值，使得大约 30% 的演示数据具有正优势（基于 1 万个数据点的随机样本计算得出）。在微调阶段，我们通常将阈值设置为使得每次迭代中大约 40% 的评估结果具有正优势。对于 T 恤和短裤的折叠任务（该任务在高质量演示数据上训练得到的策略速度较慢，但成功率较高），我们提高阈值，使得只有大约 10% 的数据具有正优势。
+
+
+
+
+
+
+
+### IMPLEMENTATION, MODEL, AND SYSTEM DETAILS
+
+<img src="D:\Embodied_AI_graph\papers\notes\pi06-note.assets\image-20260513175558946.png" alt="image-20260513175558946" style="zoom: 67%;" />
+
+metadata：文本化的任务上下文 / 条件控制信息，可能是执行风格或者环境条件等等，比较神秘（其实是 $\pi_{0.7}$ 的核心机制之一）
+
+<img src="D:\Embodied_AI_graph\papers\notes\pi06-note.assets\image-20260513173909964.png" alt="image-20260513173909964" style="zoom:50%;" />
+
+#### pi06
+
+总对数似然：
+$$
+\log \pi_\theta(a_{t:t+H}, a_{t:t+H}^\ell, \hat{\ell} | I_t, o_t, \ell)
+= \underbrace{\log \pi_\theta(\hat{\ell} | I_t, o_t, \ell)}_{\text{高层子任务}}
++ \underbrace{\log \pi_\theta(a_{t:t+H}^\ell | I_t, o_t, \ell, \hat{\ell})}_{\text{离散化动作 (FAST)}}
++ \underbrace{\log \pi_\theta(a_{t:t+H} | I_t, o_t, \ell, \hat{\ell})}_{\text{连续动作块}}
+$$
+
+- 沿用pi05的subtask规划
+- 离散动作化来自 KI（knowledge insulation） 训练方案
+
+
+
+#### Value model
+
+使用和主干同架构的Gemma 3但是超参（层数、隐藏层维度、注意力头数）缩小的模型（词表、层结构等都是一样的）
+
+
+
+## 任务数据规模
+
+| 任务                          | 数据细节                                                     |
+| ----------------------------- | ------------------------------------------------------------ |
+| T-shirt / shorts laundry      | 使用 autonomous evaluation data，不用 expert corrections；收集 300 episodes，4 个 robot stations |
+| Diverse laundry               | 450 evaluation episodes + 287 correction episodes            |
+| Failure-mode removal ablation | 约 1000 autonomous episodes，外加 280 + 378 correction episodes，3 台机器人 |
+| Box assembly                  | deployment 场景中直接收集；每轮 600 demonstrations + 360 correction episodes，3 台机器人 |
+| Cafe                          | 单轮迭代；429 correction episodes + 414 autonomous episodes  |
 
 
 
@@ -131,6 +204,10 @@ $$
 | 机械臂碰歪杯子，失败   | −1.0   |
 
 这比单个 −0.55-0.55−0.55 更忠实地表示：**这个状态有一半概率通向成功，一半概率通向失败**
+
+
+
+还有就是因为这个critic model是用MC训练的，用这种分布+cross entropy的方法可以减小离群点的影响
 
 
 
