@@ -137,3 +137,4 @@ for layer_id, layer in enumerate(vit_layers):
 
 
 一般选取T=6，包括当前帧和过去5个observation。后训练时可以扩展到18帧，54s
+

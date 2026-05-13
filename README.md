@@ -50,8 +50,6 @@ Use the `## Evidence` section for paper links, experiment references, or concise
 
 
 
-
-
 ## Auditing Completeness
 Run the vault integrity checker from the repo root:
 
@@ -69,19 +67,3 @@ Run the Python regression suite from the repo root:
 python -m unittest discover -s tests -p "test_*.py" -v
 ```
 
-## Obsidian Setup
-- Enable the Bases and Templates core plugins.
-- Set the template folder to `templates`.
-- Turn wikilinks off and automatic link updates on.
-- Use Graph search filter: `path:/^questions\// OR path:/^papers\/cards\//`.
-- Keep `showOrphans` enabled so unlinked open questions still appear in the scoped graph.
-- Set Graph node size multiplier to `1.6` for easier scanning.
-- Add Graph color groups so `path:/^questions\//` nodes render blue and `path:/^papers\/cards\//` nodes render orange.
-- `views/paper-view.md` is Obsidian-only because it embeds the base view.
-
-## Smoke Check
-- Open `views/paper-view.md` and confirm `PI0.5` and `PI0.6` appear.
-- Open Graph view and confirm these edges exist:
-  - `数据规模化 -> PI0.6`
-  - `闭环控制与实时性 -> PI0.5`
-- Open a paper card and confirm Backlinks shows the related question note.
