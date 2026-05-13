@@ -19,7 +19,7 @@ created: 2026-05-09
 
 #### model architecture
 
-![image-20260509120021681](C:\Users\s-robots050\AppData\Roaming\Typora\typora-user-images\image-20260509120021681.png)
+![image-20260509120021681](D:\Embodied_AI_graph\papers\notes\gr00t-n1-note.assets\image-20260509120021681.png)
 
 将Eagle-2 的中间层表示（具体是第12层）输到DiT的cross attention中
 

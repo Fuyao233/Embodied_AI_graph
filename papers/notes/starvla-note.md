@@ -89,6 +89,8 @@ created: 2026-05-07
 
 
 
+关于laten CoT
+
 
 
 ##### training
