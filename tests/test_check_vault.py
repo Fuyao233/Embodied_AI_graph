@@ -167,6 +167,32 @@ paper_id: pi07
         self.assertIn("[ERROR] Card missing required frontmatter: pi07.md", result.stdout)
         self.assertIn("Vault check failed with 1 issue(s).", result.stdout)
 
+    def test_detects_unquoted_titles_that_break_yaml_frontmatter(self) -> None:
+        self.write_file(
+            "papers/cards/pi07.md",
+            """---
+type: paper-card
+paper_id: pi07
+title: World Model for Robot Learning: A Comprehensive Survey
+---
+
+# World Model for Robot Learning: A Comprehensive Survey
+
+## Navigation
+- Paper note: [World Model for Robot Learning: A Comprehensive Survey note](../notes/pi07-note.md)
+""",
+        )
+        self.write_file(
+            "papers/notes/pi07-note.md",
+            canonical_note_content("pi07", "World Model for Robot Learning: A Comprehensive Survey"),
+        )
+
+        result = self.run_check()
+
+        self.assertEqual(result.returncode, 1, self.format_process_failure(result))
+        self.assertIn("[ERROR] Card missing required frontmatter: pi07.md", result.stdout)
+        self.assertIn("Vault check failed with 1 issue(s).", result.stdout)
+
     def test_detects_non_canonical_question_targets(self) -> None:
         self.write_file("papers/cards/pi07.md", canonical_card_content("pi07", "PI0.7"))
         self.write_file(

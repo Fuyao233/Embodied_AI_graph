@@ -54,7 +54,7 @@ class NewPaperCliTests(CliTestCase):
         self.assertIn("<!-- card-template-sentinel -->", card_content)
         self.assertIn("<!-- note-template-sentinel -->", note_content)
         self.assertIn("paper_id: pi07", card_content)
-        self.assertIn("title: PI0.7", card_content)
+        self.assertIn('title: "PI0.7"', card_content)
         self.assertIn("year: 2026", card_content)
         self.assertIn("alphaxiv: https://www.alphaxiv.org/overview/xxxx", card_content)
         self.assertIn("pdf: https://example.com/pi07.pdf", card_content)
@@ -75,6 +75,29 @@ class NewPaperCliTests(CliTestCase):
         self.assertIn("## Reading Notes", note_content)
         self.assertIn("## Follow-up", note_content)
         self.assertNotIn("{{", note_content)
+
+    def test_quotes_titles_that_contain_yaml_sensitive_characters(self) -> None:
+        title = 'World Model for Robot Learning: A "Comprehensive" Survey'
+        result = self.run_python(
+            "scripts/new-paper.py",
+            "--paper-id",
+            "wm-survey-2026",
+            "--title",
+            title,
+            "--alphaxiv",
+            "https://www.alphaxiv.org/abs/2605.00080v1",
+        )
+
+        self.assertEqual(result.returncode, 0, self.format_process_failure(result))
+
+        card_content = self.read_file("papers/cards/wm-survey-2026.md")
+
+        self.assertIn(
+            'title: "World Model for Robot Learning: A \\"Comprehensive\\" Survey"',
+            card_content,
+        )
+        self.assertIn(f"# {title}", card_content)
+        self.assertIn(f"[{title} note](../notes/wm-survey-2026-note.md)", card_content)
 
     def test_fails_when_the_paper_already_exists(self) -> None:
         self.write_file("papers/cards/pi07.md", "")

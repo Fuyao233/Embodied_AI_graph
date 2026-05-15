@@ -1,12 +1,12 @@
 ---
 type: paper-card
 paper_id: agvp
-title: AGVP
+title: "π_{0.7}: a Steerable Generalist Robotic Foundation Model with Emergent Capabilities"
 status: seed
-year: 
+year:
 alphaxiv: https://www.alphaxiv.org/abs/2603.15618
-pdf: 
-code: 
+pdf:
+code:
 created: 2026-05-13
 ---
 

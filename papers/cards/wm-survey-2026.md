@@ -1,7 +1,7 @@
 ---
 type: paper-card
 paper_id: wm-survey-2026
-title: World Model for Robot Learning: A Comprehensive Survey
+title: "World Model for Robot Learning: A Comprehensive Survey"
 status: seed
 year: 
 alphaxiv: https://www.alphaxiv.org/abs/2605.00080v1
@@ -10,10 +10,10 @@ code:
 created: 2026-05-11
 ---
 
-# wm-survey-2026
+# World Model for Robot Learning: A Comprehensive Survey
 
 ## Navigation
-- Paper note: [wm-survey-2026 note](../notes/wm-survey-2026-note.md)
+- Paper note: [World Model for Robot Learning: A Comprehensive Survey note](../notes/wm-survey-2026-note.md)
 
 ## Core Insight
 

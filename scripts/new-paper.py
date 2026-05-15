@@ -10,6 +10,7 @@ from _vault_common import (
     repo_root_from,
     require_non_empty,
     write_utf8,
+    yaml_quote,
 )
 
 
@@ -50,6 +51,7 @@ def main() -> int:
         template_values = {
             "{{paper_id}}": paper_id,
             "{{title}}": title,
+            "{{title_yaml}}": yaml_quote(title),
             "{{year}}": year,
             "{{alphaxiv}}": alphaxiv,
             "{{pdf}}": pdf,

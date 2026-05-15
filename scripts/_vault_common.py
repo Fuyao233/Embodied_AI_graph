@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 from typing import Dict, List, Union
@@ -29,6 +30,10 @@ def require_non_empty(raw_value: str, label: str) -> str:
     if not normalized_value:
         raise ValueError(f"{label} must not be empty or whitespace")
     return normalized_value
+
+
+def yaml_quote(value: str) -> str:
+    return json.dumps(value, ensure_ascii=False)
 
 
 def render_template(template_path: Path, values: Dict[str, str]) -> str:
@@ -75,5 +80,26 @@ def has_required_card_frontmatter(content: str) -> bool:
     frontmatter = match.group(1)
     has_required_type = re.search(r"(?mi)^type:\s*paper-card\s*$", frontmatter) is not None
     has_paper_id = re.search(r"(?mi)^paper_id:\s*\S.*$", frontmatter) is not None
-    has_title = re.search(r"(?mi)^title:\s*\S.*$", frontmatter) is not None
+    title_match = re.search(r"(?mi)^title:\s*(.*)$", frontmatter)
+    has_title = title_match is not None and is_valid_yaml_scalar(title_match.group(1))
     return has_required_type and has_paper_id and has_title
+
+
+def is_valid_yaml_scalar(raw_value: str) -> bool:
+    normalized_value = raw_value.strip()
+    if not normalized_value:
+        return False
+
+    if normalized_value.startswith('"'):
+        try:
+            parsed_value = json.loads(normalized_value)
+        except json.JSONDecodeError:
+            return False
+        return isinstance(parsed_value, str) and bool(parsed_value.strip())
+
+    if normalized_value.startswith("'"):
+        if len(normalized_value) < 2 or not normalized_value.endswith("'"):
+            return False
+        return bool(normalized_value[1:-1].replace("''", "'").strip())
+
+    return re.search(r":\s", normalized_value) is None
