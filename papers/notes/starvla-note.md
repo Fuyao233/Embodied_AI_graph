@@ -141,7 +141,7 @@ train()
   → _finalize_training()
 ```
 
-
+train的loss来自self.model.forward，想调节训练目标就在forward里面算好各部分，放到 action_loss 里面
 
 **VLAMTrainer**: VLA & VLM cotraining，vla loss和vlm loss叠加训练
 
