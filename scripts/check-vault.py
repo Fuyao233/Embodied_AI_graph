@@ -6,7 +6,10 @@ from typing import List
 
 from _vault_common import (
     extract_markdown_link_targets,
+    extract_markdown_section,
     has_required_card_frontmatter,
+    has_required_code_reading_frontmatter,
+    has_required_code_type_frontmatter,
     is_local_markdown_file_target,
     list_markdown_files,
     repo_root_from,
@@ -15,6 +18,9 @@ from _vault_common import (
 
 CANONICAL_QUESTION_TARGET_PATTERN = re.compile(
     r"^\.\./papers/cards/[a-z0-9][a-z0-9.-]*\.md$"
+)
+CANONICAL_CODE_TYPE_TARGET_PATTERN = re.compile(
+    r"^\.\./types/[a-z0-9][a-z0-9.-]*\.md$"
 )
 
 
@@ -27,14 +33,39 @@ def question_has_non_canonical_paper_target(content: str) -> bool:
     return False
 
 
+def extract_related_code_type_targets(content: str) -> List[str]:
+    related_code_types_content = extract_markdown_section(content, "Related Code Types")
+    return [
+        target
+        for target in extract_markdown_link_targets(related_code_types_content)
+        if is_local_markdown_file_target(target)
+    ]
+
+
+def code_reading_has_code_type_target(content: str) -> bool:
+    return bool(extract_related_code_type_targets(content))
+
+
+def code_reading_has_non_canonical_code_type_target(content: str) -> bool:
+    targets = extract_related_code_type_targets(content)
+    return any(
+        CANONICAL_CODE_TYPE_TARGET_PATTERN.fullmatch(target) is None
+        for target in targets
+    )
+
+
 def collect_issues(repo_root: Path) -> List[str]:
     cards_root = repo_root / "papers" / "cards"
     notes_root = repo_root / "papers" / "notes"
     questions_root = repo_root / "questions"
+    code_types_root = repo_root / "codes" / "types"
+    code_readings_root = repo_root / "codes" / "readings"
 
     card_files = list_markdown_files(cards_root, "*.md")
     note_files = list_markdown_files(notes_root, "*-note.md")
     question_files = list_markdown_files(questions_root, "*.md")
+    code_type_files = list_markdown_files(code_types_root, "*.md")
+    code_reading_files = list_markdown_files(code_readings_root, "*.md")
 
     cards_by_id = {card_file.stem: card_file for card_file in card_files}
     notes_by_id = {}
@@ -75,6 +106,31 @@ def collect_issues(repo_root: Path) -> List[str]:
         if question_has_non_canonical_paper_target(question_content):
             issues.append(
                 f"[ERROR] Question contains non-canonical paper target: {question_file.name}"
+            )
+
+    for code_type_file in code_type_files:
+        code_type_content = code_type_file.read_text(encoding="utf-8")
+        if not has_required_code_type_frontmatter(code_type_content):
+            issues.append(
+                f"[ERROR] Code type missing required frontmatter: {code_type_file.name}"
+            )
+
+    for code_reading_file in code_reading_files:
+        code_reading_content = code_reading_file.read_text(encoding="utf-8")
+        if not has_required_code_reading_frontmatter(code_reading_content):
+            issues.append(
+                f"[ERROR] Code reading missing required frontmatter: {code_reading_file.name}"
+            )
+
+        if not code_reading_has_code_type_target(code_reading_content):
+            issues.append(
+                f"[ERROR] Code reading missing code-type link: {code_reading_file.name}"
+            )
+
+        if code_reading_has_non_canonical_code_type_target(code_reading_content):
+            issues.append(
+                "[ERROR] Code reading contains non-canonical code-type target: "
+                f"{code_reading_file.name}"
             )
 
     return issues

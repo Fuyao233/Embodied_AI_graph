@@ -72,17 +72,61 @@ def is_local_markdown_file_target(target: str) -> bool:
     return bool(LOCAL_MARKDOWN_TARGET_PATTERN.search(target))
 
 
-def has_required_card_frontmatter(content: str) -> bool:
+def has_required_titled_frontmatter(
+    content: str,
+    *,
+    expected_type: str,
+    identifier_key: str,
+) -> bool:
     match = FRONTMATTER_PATTERN.match(content)
     if match is None:
         return False
 
     frontmatter = match.group(1)
-    has_required_type = re.search(r"(?mi)^type:\s*paper-card\s*$", frontmatter) is not None
-    has_paper_id = re.search(r"(?mi)^paper_id:\s*\S.*$", frontmatter) is not None
+    has_required_type = (
+        re.search(rf"(?mi)^type:\s*{re.escape(expected_type)}\s*$", frontmatter)
+        is not None
+    )
+    has_identifier = (
+        re.search(rf"(?mi)^{re.escape(identifier_key)}:\s*\S.*$", frontmatter)
+        is not None
+    )
     title_match = re.search(r"(?mi)^title:\s*(.*)$", frontmatter)
     has_title = title_match is not None and is_valid_yaml_scalar(title_match.group(1))
-    return has_required_type and has_paper_id and has_title
+    return has_required_type and has_identifier and has_title
+
+
+def has_required_card_frontmatter(content: str) -> bool:
+    return has_required_titled_frontmatter(
+        content,
+        expected_type="paper-card",
+        identifier_key="paper_id",
+    )
+
+
+def has_required_code_type_frontmatter(content: str) -> bool:
+    return has_required_titled_frontmatter(
+        content,
+        expected_type="code-type",
+        identifier_key="code_id",
+    )
+
+
+def has_required_code_reading_frontmatter(content: str) -> bool:
+    return has_required_titled_frontmatter(
+        content,
+        expected_type="code-reading",
+        identifier_key="reading_id",
+    )
+
+
+def extract_markdown_section(content: str, heading: str) -> str:
+    escaped_heading = re.escape(heading)
+    match = re.search(
+        rf"(?ms)^##\s+{escaped_heading}\s*$\r?\n(.*?)(?=^##\s+|\Z)",
+        content,
+    )
+    return match.group(1) if match is not None else ""
 
 
 def is_valid_yaml_scalar(raw_value: str) -> bool:

@@ -30,12 +30,51 @@ paper_id: {paper_id}
 """
 
 
+def canonical_code_type_content(code_id: str, title: str) -> str:
+    return f"""---
+type: code-type
+code_id: {code_id}
+title: {title}
+---
+
+# {title}
+
+## Why This Matters
+"""
+
+
+def canonical_code_reading_content(reading_id: str, title: str, *code_ids: str) -> str:
+    related_lines = "\n".join(
+        f"- [{code_id}](../types/{code_id}.md)" for code_id in code_ids
+    )
+    return f"""---
+type: code-reading
+reading_id: {reading_id}
+title: {title}
+---
+
+# {title}
+
+## Context
+
+## Reading Notes
+- [PI0.7 card](../../papers/cards/pi07.md)
+
+## Related Code Types
+{related_lines}
+
+## Follow-up
+"""
+
+
 class CheckVaultCliTests(CliTestCase):
     def setUp(self) -> None:
         super().setUp()
         self.ensure_directory("papers/cards")
         self.ensure_directory("papers/notes")
         self.ensure_directory("questions")
+        self.ensure_directory("codes/types")
+        self.ensure_directory("codes/readings")
         self.copy_script("_vault_common.py", "check-vault.py")
 
     def run_check(self):
@@ -322,3 +361,152 @@ title: World Model for Robot Learning: A Comprehensive Survey
             result.stdout,
         )
         self.assertIn("Vault check failed with 1 issue(s).", result.stdout)
+
+    def test_passes_for_code_reading_with_multiple_canonical_code_type_links(self) -> None:
+        self.write_file("codes/types/infra.md", canonical_code_type_content("infra", "Infra"))
+        self.write_file("codes/types/vla.md", canonical_code_type_content("vla", "VLA"))
+        self.write_file(
+            "codes/readings/openvla-data-pipeline.md",
+            canonical_code_reading_content(
+                "openvla-data-pipeline",
+                "OpenVLA Data Pipeline",
+                "infra",
+                "vla",
+            ),
+        )
+
+        result = self.run_check()
+
+        self.assertEqual(result.returncode, 0, self.format_process_failure(result))
+        self.assertEqual(result.stdout.strip(), "Vault check passed.")
+
+    def test_detects_missing_required_code_type_frontmatter(self) -> None:
+        self.write_file(
+            "codes/types/infra.md",
+            """---
+type: code-type
+code_id: infra
+---
+
+# Infra
+""",
+        )
+        self.write_file(
+            "codes/readings/openvla-data-pipeline.md",
+            canonical_code_reading_content(
+                "openvla-data-pipeline",
+                "OpenVLA Data Pipeline",
+                "infra",
+            ),
+        )
+
+        result = self.run_check()
+
+        self.assertEqual(result.returncode, 1, self.format_process_failure(result))
+        self.assertIn("[ERROR] Code type missing required frontmatter: infra.md", result.stdout)
+        self.assertIn("Vault check failed with 1 issue(s).", result.stdout)
+
+    def test_detects_missing_required_code_reading_frontmatter(self) -> None:
+        self.write_file("codes/types/infra.md", canonical_code_type_content("infra", "Infra"))
+        self.write_file(
+            "codes/readings/openvla-data-pipeline.md",
+            """---
+type: code-reading
+reading_id: openvla-data-pipeline
+---
+
+# OpenVLA Data Pipeline
+
+## Related Code Types
+- [Infra](../types/infra.md)
+""",
+        )
+
+        result = self.run_check()
+
+        self.assertEqual(result.returncode, 1, self.format_process_failure(result))
+        self.assertIn(
+            "[ERROR] Code reading missing required frontmatter: openvla-data-pipeline.md",
+            result.stdout,
+        )
+        self.assertIn("Vault check failed with 1 issue(s).", result.stdout)
+
+    def test_detects_code_reading_without_any_code_type_link(self) -> None:
+        self.write_file("codes/types/infra.md", canonical_code_type_content("infra", "Infra"))
+        self.write_file(
+            "codes/readings/openvla-data-pipeline.md",
+            """---
+type: code-reading
+reading_id: openvla-data-pipeline
+title: OpenVLA Data Pipeline
+---
+
+# OpenVLA Data Pipeline
+
+## Related Code Types
+
+## Follow-up
+""",
+        )
+
+        result = self.run_check()
+
+        self.assertEqual(result.returncode, 1, self.format_process_failure(result))
+        self.assertIn(
+            "[ERROR] Code reading missing code-type link: openvla-data-pipeline.md",
+            result.stdout,
+        )
+        self.assertIn("Vault check failed with 1 issue(s).", result.stdout)
+
+    def test_detects_non_canonical_code_type_targets(self) -> None:
+        self.write_file("codes/types/infra.md", canonical_code_type_content("infra", "Infra"))
+        self.write_file(
+            "codes/readings/openvla-data-pipeline.md",
+            """---
+type: code-reading
+reading_id: openvla-data-pipeline
+title: OpenVLA Data Pipeline
+---
+
+# OpenVLA Data Pipeline
+
+## Related Code Types
+- [Infra](../infra.md)
+""",
+        )
+
+        result = self.run_check()
+
+        self.assertEqual(result.returncode, 1, self.format_process_failure(result))
+        self.assertIn(
+            "[ERROR] Code reading contains non-canonical code-type target: openvla-data-pipeline.md",
+            result.stdout,
+        )
+        self.assertIn("Vault check failed with 1 issue(s).", result.stdout)
+
+    def test_ignores_non_code_type_local_links_outside_related_code_types_section(
+        self,
+    ) -> None:
+        self.write_file("codes/types/infra.md", canonical_code_type_content("infra", "Infra"))
+        self.write_file(
+            "codes/readings/openvla-data-pipeline.md",
+            """---
+type: code-reading
+reading_id: openvla-data-pipeline
+title: OpenVLA Data Pipeline
+---
+
+# OpenVLA Data Pipeline
+
+## Reading Notes
+- [PI0.7 card](../../papers/cards/pi07.md)
+
+## Related Code Types
+- [Infra](../types/infra.md)
+""",
+        )
+
+        result = self.run_check()
+
+        self.assertEqual(result.returncode, 0, self.format_process_failure(result))
+        self.assertEqual(result.stdout.strip(), "Vault check passed.")
