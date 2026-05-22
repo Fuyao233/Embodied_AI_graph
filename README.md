@@ -5,6 +5,8 @@
 - `papers/notes/`: freeform reading and implementation notes
 - `questions/`: open questions that own the graph edges
 - `insights/`: reusable claims backed by links, experiments, or work experience
+- `codes/types/`: stable code category hubs that appear as graph-visible summary nodes
+- `codes/readings/`: concrete source-reading notes that link directly to one or more code types
 
 ## Operating Rules
 1. Create one card and one note for every new paper.
@@ -15,8 +17,12 @@
 6. Every card must link to its note using `../notes/<paper_id>-note.md`.
 7. Every note must link back to its card using `../cards/<paper_id>.md`.
 8. Every question must link only to `../papers/cards/<paper_id>.md`.
-9. Use `views/paper-view.md` for the paper table and Graph view for the big picture.
-10. Create insight notes from `templates/insight.md` or `scripts/new-insight.py`, and keep them scoped to a single claim.
+9. Create `code-type` notes in `codes/types/*` and `code-reading` notes in `codes/readings/*`.
+10. Add code relationships only under `codes/readings/* -> ## Related Code Types`.
+11. Every code-reading note must link to code types using canonical `../types/<code_id>.md` targets.
+12. Use `views/paper-view.md` for the paper table and Graph view for the big picture.
+13. The main Graph view includes only `questions`, `papers/cards`, `codes/types`, and `codes/readings`.
+14. Create insight notes from `templates/insight.md` or `scripts/new-insight.py`, and keep them scoped to a single claim.
 
 ## Naming Convention
 - Use lowercase `paper_id` values such as `pi05` and `pi06`.
@@ -37,6 +43,8 @@ python scripts/new-paper.py --paper-id pi07 --title "π_{0.7}: a Steerable Gener
 Optional metadata can be filled during creation with `--year`, `--pdf`, and `--code`.
 The script renders `templates/paper-card.md` and `templates/paper-note.md`, so those templates are the scaffold source of truth.
 
+
+
 ## Adding Insights
 
 Use the insight scaffold script to create a working claim note:
@@ -50,6 +58,18 @@ Use the `## Evidence` section for paper links, experiment references, or concise
 
 
 
+## Adding Code Notes
+
+Create code category notes from `templates/code-type.md` and concrete source-reading notes from `templates/code-reading.md`.
+
+Use these rules:
+
+1. Save category notes as `codes/types/<code_id>.md`.
+2. Save reading notes as `codes/readings/<reading_id>.md`.
+3. Put code-type links only under `## Related Code Types`.
+4. Link code types with canonical paths such as `../types/infra.md`.
+5. Use the global Graph view to inspect the code-type and code-reading subgraph alongside question and paper-card nodes.
+
 ## Auditing Completeness
 Run the vault integrity checker from the repo root:
 
@@ -57,7 +77,7 @@ Run the vault integrity checker from the repo root:
 python scripts/check-vault.py
 ```
 
-It verifies that every paper card has a matching note, every note has a matching card, card-note links are mutual, paper cards contain the required frontmatter for `views/paper-view.md`, and question files link only to canonical `../papers/cards/<paper_id>.md` targets.
+It verifies that every paper card has a matching note, every note has a matching card, card-note links are mutual, paper cards contain the required frontmatter for `views/paper-view.md`, question files link only to canonical `../papers/cards/<paper_id>.md` targets, code-type files contain the required frontmatter, and code-reading files link to canonical `../types/<code_id>.md` targets.
 The script exits with `0` and prints `Vault check passed.` when no issues are found, or exits with `1` and prints the collected `[ERROR]` lines followed by `Vault check failed with <n> issue(s).`.
 
 ## Running Tests
