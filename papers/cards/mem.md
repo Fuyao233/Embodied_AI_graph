@@ -1,12 +1,14 @@
 ---
 type: paper-card
 paper_id: mem
-title: MEM
+title: "MEM: Multi-Scale Embodied Memory for\r
+
+  Vision Language Action Models"
 status: seed
-year: 
+year:
 alphaxiv: https://www.alphaxiv.org/abs/2603.03596
-pdf: 
-code: 
+pdf:
+code:
 created: 2026-05-12
 ---
 

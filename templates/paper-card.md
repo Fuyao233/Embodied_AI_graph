@@ -1,7 +1,7 @@
 ---
 type: paper-card
 paper_id: {{paper_id}}
-title: {{title}}
+title: {{title_yaml}}
 status: seed
 year: {{year}}
 alphaxiv: {{alphaxiv}}

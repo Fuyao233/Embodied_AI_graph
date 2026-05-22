@@ -29,5 +29,8 @@ Generalization 决定机器人是否能从“会做训练集任务”走向“�
 - [AGVP](../papers/cards/agvp.md)：由于模型通过 VL-MoT 架构注入了更精细、且具有动作引导（AGVP）的视觉特征，它在面对未见过的环境和光照变化时表现出极强的鲁棒性
 
 
+- [KI](../papers/cards/ki.md)：提出在训练action expert的时候应该避免梯度回传到VLM，避免破坏VLM原本已学习的分布
+
+
 ## Next Checks
 - 

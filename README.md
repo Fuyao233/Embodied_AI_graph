@@ -31,7 +31,7 @@
 Use the scaffold script to create a matching paper card and note:
 
 ```powershell
-python scripts/new-paper.py --paper-id pi07 --title "PI0.7" --alphaxiv "https://www.alphaxiv.org/overview/xxxx"
+python scripts/new-paper.py --paper-id pi07 --title "π_{0.7}: a Steerable Generalist Robotic Foundation Model with Emergent Capabilities" --alphaxiv "https://www.alphaxiv.org/overview/xxxx"
 ```
 
 Optional metadata can be filled during creation with `--year`, `--pdf`, and `--code`.
