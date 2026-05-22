@@ -1,6 +1,6 @@
 {
   "collapse-filter": true,
-  "search": "path:/^questions\\// OR path:/^papers\\/cards\\//",
+  "search": "path:/^questions\\// OR path:/^papers\\/cards\\// OR path:/^codes\\/types\\// OR path:/^codes\\/readings\\//",
   "showTags": false,
   "showAttachments": false,
   "hideUnresolved": false,
@@ -19,6 +19,20 @@
       "color": {
         "a": 1,
         "rgb": 16750848
+      }
+    },
+    {
+      "query": "path:/^codes\\/types\\//",
+      "color": {
+        "a": 1,
+        "rgb": 4236116
+      }
+    },
+    {
+      "query": "path:/^codes\\/readings\\//",
+      "color": {
+        "a": 1,
+        "rgb": 13662033
       }
     }
   ],
