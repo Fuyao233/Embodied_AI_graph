@@ -11,7 +11,7 @@ created: 2026-05-11
 
 ## Reading Notes
 
-![image-20260511114557515](D:\Embodied_AI_graph\papers\notes\wm-survey-2026-note.assets\image-20260511114557515.png)
+![image-20260511114557515](.\wm-survey-2026-note.assets\image-20260511114557515.png)
 
 
 
@@ -47,7 +47,7 @@ VLA缺乏对世界结构的预测 -> World Model
 
 将世界模型集成到机器人的控制策略中
 
-![image-20260511120635910](D:\Embodied_AI_graph\papers\notes\wm-survey-2026-note.assets\image-20260511120635910.png)
+![image-20260511120635910](.\wm-survey-2026-note.assets\image-20260511120635910.png)
 
 
 
@@ -147,7 +147,7 @@ $\mathcal{F}_{l}^{mix}$ denotes a layerwise interaction operator, such as joint 
 
 除了直接控制之外，世界模型还充当交互式模拟器。这个角色对于强化学习（RL）尤为关键
 
-![image-20260512113937852](D:\Embodied_AI_graph\papers\notes\wm-survey-2026-note.assets\image-20260512113937852.png)
+![image-20260512113937852](.\wm-survey-2026-note.assets\image-20260512113937852.png)
 
 
 

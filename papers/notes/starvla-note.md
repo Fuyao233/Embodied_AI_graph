@@ -19,7 +19,7 @@ created: 2026-05-07
 - deployment：通用推理服务层
 - examples：具体应用场景层
 
-
+<img src="./starvla-note.assets/da834462-a350-4e21-aff7-2fb52f946a99.png" alt="da834462-a350-4e21-aff7-2fb52f946a99" style="zoom: 67%;" />
 
 #### StarVLA
 
@@ -93,6 +93,12 @@ created: 2026-05-07
 
 
 
+
+
+
+
+
+
 ##### training
 
 主训练循环：
@@ -149,5 +155,74 @@ train的loss来自self.model.forward，想调节训练目标就在forward里面�
 
 
 
+### 实践经验
+
+#### **如果要自定义一个framework需要改哪些内容？**
+
+- 类定义
+- 配置文件
+- loss计算
+- dataloader
 
 
+
+#### **QWen 3视频输入**
+
+- 支持视频/图片列表输入
+- 视频采样参数是`fps`，图片列表的采样频率是`sample_fps`，这个频率是采样后帧间间隔
+
+
+
+
+
+#### **VLM相关**
+
+- `apply_chat_template` 会把它转成 Qwen 官方 chat 格式的字符串，类似：
+
+  ```
+  <|im_start|>user
+  <image>
+  请描述这张图
+  <|im_end|>
+  <|im_start|>assistant
+  ```
+
+
+
+
+
+#### QWen3.build_qwenvl_inputs
+
+- 整理message：image，text，video
+
+- `batch_inputs = processor.apply_chat_template`, batch_inputs内容：
+
+- | key                 | 含义                                                   | 给谁用                  | size                                                      |
+  | ------------------- | ------------------------------------------------------ | ----------------------- | --------------------------------------------------------- |
+  | `input_ids`         | tokenized 后的文本 + 图像占位 token 序列               | LLM                     | batch * n_tokens                                          |
+  | `attention_mask`    | padding mask，`1` 是有效 token，`0` 是 padding         | LLM causal mask         | batch * n_tokens                                          |
+  | `mm_token_type_ids` | 多模态 token 类型，通常 `0=text`, `1=image`, `2=video` | M-RoPE / position ids   | batch * n_tokens                                          |
+  | `pixel_values`      | processor 预处理后的图像 patch 张量，不是原图          | vision encoder          | n_patch * n_pixel_per_patch                               |
+  | `image_grid_thw`    | 每张图对应的视觉 grid：`[T, H, W]`                     | vision encoder + M-RoPE | n_images(每个样本输入了三个视角的图片，所以是batch*3) * 3 |
+
+- 全链路：
+
+  ```
+  examples
+    ↓
+  forward()
+    ↓
+  _Memory_QWen3_VL_Interface.build_qwenvl_inputs(...)
+    ↓
+  qwen_inputs / batch_inputs
+    ↓
+  _forward_qwen(qwen_inputs, inputs_embeds=...)
+    ↓
+  self.qwen_vl_interface(**model_inputs)
+    ↓
+  _Memory_QWen3_VL_Interface.forward(...)
+    ↓
+  MemoryQwen3VLForConditionalGeneration.forward(...)
+  ```
+
+  
