@@ -1,2 +1,2 @@
 1. 增加清空、删除笔记功能
-1. 改进graph view
+1. 优化graph-view显示
