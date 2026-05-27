@@ -7,7 +7,7 @@ created: 2026-05-14
 # KI Note
 
 ## Navigation
-- Paper card: [KI card](../cards/ki.md)
+- Paper card: [KI card](../cards/KI.md)
 
 ## Reading Notes
 

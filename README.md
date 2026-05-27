@@ -25,10 +25,11 @@
 14. Create insight notes from `templates/insight.md` or `scripts/new-insight.py`, and keep them scoped to a single claim.
 
 ## Naming Convention
-- Use lowercase `paper_id` values such as `pi05` and `pi06`.
+- Use ASCII `paper_id` values such as `pi05`, `PI07`, and `gr00t-n1`.
 - Paper card filename: `papers/cards/<paper_id>.md`
 - Paper note filename: `papers/notes/<paper_id>-note.md`
 - Keep the displayed title human-readable, for example `PI0.5`.
+- Keep identifier casing consistent across filenames, frontmatter, and links.
 
 ## Python Requirement
 - Install Python 3.8+ and make sure `python` works in your terminal from the repo root.
@@ -42,8 +43,6 @@ python scripts/new-paper.py --paper-id pi07 --title "π_{0.7}: a Steerable Gener
 
 Optional metadata can be filled during creation with `--year`, `--pdf`, and `--code`.
 The script renders `templates/paper-card.md` and `templates/paper-note.md`, so those templates are the scaffold source of truth.
-
-
 
 ## Adding Insights
 

@@ -17,10 +17,10 @@ from _vault_common import (
 
 
 CANONICAL_QUESTION_TARGET_PATTERN = re.compile(
-    r"^\.\./papers/cards/[a-z0-9][a-z0-9.-]*\.md$"
+    r"^\.\./papers/cards/[A-Za-z0-9][A-Za-z0-9.-]*\.md$"
 )
 CANONICAL_CODE_TYPE_TARGET_PATTERN = re.compile(
-    r"^\.\./types/[a-z0-9][a-z0-9.-]*\.md$"
+    r"^\.\./types/[A-Za-z0-9][A-Za-z0-9.-]*\.md$"
 )
 
 

@@ -7,7 +7,7 @@ created: 2026-05-22
 # RoboTwin: Dual-Arm Robot Benchmark with Generative Digital Twins Note
 
 ## Navigation
-- Paper card: [RoboTwin: Dual-Arm Robot Benchmark with Generative Digital Twins card](../cards/robotwin.md)
+- Paper card: [RoboTwin: Dual-Arm Robot Benchmark with Generative Digital Twins card](../cards/RoboTwin.md)
 
 ## Reading Notes
 

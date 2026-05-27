@@ -13,7 +13,7 @@ class NewInsightCliTests(CliTestCase):
         self.copy_script("_vault_common.py", "new-insight.py")
         self.copy_template("insight.md")
 
-    def test_renders_the_template_into_an_insight_file_with_normalized_lowercase_id(
+    def test_renders_the_template_into_an_insight_file_with_trimmed_id(
         self,
     ) -> None:
         template_path = self.vault_root / "templates/insight.md"
@@ -35,12 +35,12 @@ class NewInsightCliTests(CliTestCase):
 
         today = date.today().isoformat()
         insight_content = self.read_file(
-            "insights/pretrain-not-fully-converged.md"
+            "insights/Pretrain-Not-Fully-Converged.md"
         )
 
         self.assertIn("<!-- insight-template-sentinel -->", insight_content)
         self.assertIn("type: insight", insight_content)
-        self.assertIn("insight_id: pretrain-not-fully-converged", insight_content)
+        self.assertIn("insight_id: Pretrain-Not-Fully-Converged", insight_content)
         self.assertIn(f"created: {today}", insight_content)
         self.assertIn(
             "# Pretraining need not fully converge for downstream performance",
@@ -61,7 +61,7 @@ class NewInsightCliTests(CliTestCase):
         )
 
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("Insight already exists: pretrain-not-fully-converged", result.stderr)
+        self.assertIn("Insight already exists: Pretrain-Not-Fully-Converged", result.stderr)
 
     def test_fails_validation_for_invalid_insight_ids(self) -> None:
         result = self.run_python(
@@ -73,7 +73,7 @@ class NewInsightCliTests(CliTestCase):
         )
 
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("InsightId must match ^[a-z0-9][a-z0-9.-]*$", result.stderr)
+        self.assertIn("InsightId must match ^[A-Za-z0-9][A-Za-z0-9.-]*$", result.stderr)
 
     def test_fails_validation_for_whitespace_only_claims(self) -> None:
         result = self.run_python(

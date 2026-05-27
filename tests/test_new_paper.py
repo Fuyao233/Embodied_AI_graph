@@ -13,7 +13,7 @@ class NewPaperCliTests(CliTestCase):
         self.copy_script("_vault_common.py", "new-paper.py")
         self.copy_template("paper-card.md", "paper-note.md")
 
-    def test_renders_templates_into_both_files_with_normalized_lowercase_paper_id_and_mutual_links(
+    def test_renders_templates_into_both_files_with_trimmed_paper_id_and_mutual_links(
         self,
     ) -> None:
         card_template_path = self.vault_root / "templates/paper-card.md"
@@ -48,19 +48,19 @@ class NewPaperCliTests(CliTestCase):
         self.assertEqual(result.returncode, 0, self.format_process_failure(result))
 
         today = date.today().isoformat()
-        card_content = self.read_file("papers/cards/pi07.md")
-        note_content = self.read_file("papers/notes/pi07-note.md")
+        card_content = self.read_file("papers/cards/PI07.md")
+        note_content = self.read_file("papers/notes/PI07-note.md")
 
         self.assertIn("<!-- card-template-sentinel -->", card_content)
         self.assertIn("<!-- note-template-sentinel -->", note_content)
-        self.assertIn("paper_id: pi07", card_content)
+        self.assertIn("paper_id: PI07", card_content)
         self.assertIn('title: "PI0.7"', card_content)
         self.assertIn("year: 2026", card_content)
         self.assertIn("alphaxiv: https://www.alphaxiv.org/overview/xxxx", card_content)
         self.assertIn("pdf: https://example.com/pi07.pdf", card_content)
         self.assertIn("code: https://github.com/example/pi07", card_content)
         self.assertIn(f"created: {today}", card_content)
-        self.assertIn("[PI0.7 note](../notes/pi07-note.md)", card_content)
+        self.assertIn("[PI0.7 note](../notes/PI07-note.md)", card_content)
         self.assertIn("## Core Insight", card_content)
         self.assertIn("## References", card_content)
         self.assertIn("- AlphaXiv: https://www.alphaxiv.org/overview/xxxx", card_content)
@@ -68,10 +68,10 @@ class NewPaperCliTests(CliTestCase):
         self.assertIn("- Code: https://github.com/example/pi07", card_content)
         self.assertNotIn("{{", card_content)
 
-        self.assertIn("paper_id: pi07", note_content)
+        self.assertIn("paper_id: PI07", note_content)
         self.assertIn(f"created: {today}", note_content)
         self.assertIn("# PI0.7 Note", note_content)
-        self.assertIn("[PI0.7 card](../cards/pi07.md)", note_content)
+        self.assertIn("[PI0.7 card](../cards/PI07.md)", note_content)
         self.assertIn("## Reading Notes", note_content)
         self.assertIn("## Follow-up", note_content)
         self.assertNotIn("{{", note_content)
@@ -113,7 +113,7 @@ class NewPaperCliTests(CliTestCase):
         )
 
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("Paper already exists: pi07", result.stderr)
+        self.assertIn("Paper already exists: PI07", result.stderr)
 
     def test_fails_validation_for_invalid_paper_ids(self) -> None:
         result = self.run_python(
@@ -127,7 +127,7 @@ class NewPaperCliTests(CliTestCase):
         )
 
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("PaperId must match ^[a-z0-9][a-z0-9.-]*$", result.stderr)
+        self.assertIn("PaperId must match ^[A-Za-z0-9][A-Za-z0-9.-]*$", result.stderr)
 
     def test_fails_validation_for_whitespace_only_titles(self) -> None:
         result = self.run_python(

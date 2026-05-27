@@ -1,6 +1,6 @@
 ---
 type: paper-card
-paper_id: robotwin
+paper_id: RoboTwin
 title: "RoboTwin: Dual-Arm Robot Benchmark with Generative Digital Twins"
 status: seed
 year: 

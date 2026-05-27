@@ -7,7 +7,7 @@ created: 2026-05-13
 # AGVP Note
 
 ## Navigation
-- Paper card: [AGVP card](../cards/agvp.md)
+- Paper card: [AGVP card](../cards/AGVP.md)
 
 ## Reading Notes
 

@@ -81,14 +81,14 @@ class CheckVaultCliTests(CliTestCase):
         return self.run_python("scripts/check-vault.py")
 
     def test_passes_for_a_canonical_isolated_vault(self) -> None:
-        self.write_file("papers/cards/pi07.md", canonical_card_content("pi07", "PI0.7"))
+        self.write_file("papers/cards/PI07.md", canonical_card_content("PI07", "PI0.7"))
         self.write_file(
-            "papers/notes/pi07-note.md",
-            canonical_note_content("pi07", "PI0.7"),
+            "papers/notes/PI07-note.md",
+            canonical_note_content("PI07", "PI0.7"),
         )
         self.write_file(
             "questions/tracking.md",
-            "# Tracking\n\n## Related Papers\n- [PI0.7](../papers/cards/pi07.md)\n",
+            "# Tracking\n\n## Related Papers\n- [PI0.7](../papers/cards/PI07.md)\n",
         )
 
         result = self.run_check()
@@ -363,15 +363,15 @@ title: World Model for Robot Learning: A Comprehensive Survey
         self.assertIn("Vault check failed with 1 issue(s).", result.stdout)
 
     def test_passes_for_code_reading_with_multiple_canonical_code_type_links(self) -> None:
-        self.write_file("codes/types/infra.md", canonical_code_type_content("infra", "Infra"))
-        self.write_file("codes/types/vla.md", canonical_code_type_content("vla", "VLA"))
+        self.write_file("codes/types/Infra.md", canonical_code_type_content("Infra", "Infra"))
+        self.write_file("codes/types/VLA.md", canonical_code_type_content("VLA", "VLA"))
         self.write_file(
             "codes/readings/openvla-data-pipeline.md",
             canonical_code_reading_content(
                 "openvla-data-pipeline",
                 "OpenVLA Data Pipeline",
-                "infra",
-                "vla",
+                "Infra",
+                "VLA",
             ),
         )
 

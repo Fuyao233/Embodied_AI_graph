@@ -1,6 +1,6 @@
 ---
 type: paper-card
-paper_id: mem
+paper_id: pi-MEM
 title: "MEM: Multi-Scale Embodied Memory for Vision Language Action Models"
 status: seed
 year:

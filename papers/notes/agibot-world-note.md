@@ -7,7 +7,7 @@ created: 2026-05-09
 # AgiBot-World Note
 
 ## Navigation
-- Paper card: [AgiBot-World card](../cards/agibot-world.md)
+- Paper card: [AgiBot-World card](../cards/AgiBotWorld.md)
 
 ## Reading Notes
 

@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Dict, List, Union
 
 
-IDENTIFIER_PATTERN = re.compile(r"^[a-z0-9][a-z0-9.-]*$")
+IDENTIFIER_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9.-]*$")
 MARKDOWN_LINK_TARGET_PATTERN = re.compile(r"\[[^\]]+\]\(([^)\s]+)(?:\s+[^)]*)?\)")
 FRONTMATTER_PATTERN = re.compile(r"\A---\r?\n(.*?)\r?\n---", re.DOTALL)
 WINDOWS_ABSOLUTE_PATH_PATTERN = re.compile(r"^[a-zA-Z]:[\\/]")
@@ -19,9 +19,9 @@ def repo_root_from(script_file: Union[str, Path]) -> Path:
 
 
 def normalize_identifier(raw_value: str, label: str) -> str:
-    normalized_value = raw_value.strip().lower()
+    normalized_value = raw_value.strip()
     if not IDENTIFIER_PATTERN.fullmatch(normalized_value):
-        raise ValueError(f"{label} must match ^[a-z0-9][a-z0-9.-]*$")
+        raise ValueError(f"{label} must match ^[A-Za-z0-9][A-Za-z0-9.-]*$")
     return normalized_value
 
 

@@ -31,5 +31,6 @@ open questions:
 - [PI0.6 card](../papers/cards/pi06.md): 利用部署经验训练value model进而改进策略，持续提升策略表现（Recap）
  
  **Memory: 
-- [MEM](../papers/cards/mem.md): 在双尺度记忆的框架下为长短期记忆找到了合适的模态——视频编码承载短程，文本总结承载长程
+- [MEM](../papers/cards/pi-MEM.md): 在双尺度记忆的框架下为长短期记忆找到了合适的模态——视频编码承载短程，文本总结承载长程
+- [RMBench](../papers/cards/RMBench.md)：用多阶段关键帧储存长期记忆，以最近观测以及当前阶段起始帧作为短期记忆信息，类GR00T-N1的交互方式
 

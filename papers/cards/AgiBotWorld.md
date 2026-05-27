@@ -1,6 +1,6 @@
 ---
 type: paper-card
-paper_id: agibot-world
+paper_id: AgiBotWorld
 title: "AgiBot World Colosseo: A Large-scale Manipulation Platform for Scalable and Intelligent Embodied Systems"
 status: seed
 year:
