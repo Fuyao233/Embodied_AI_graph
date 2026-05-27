@@ -44,6 +44,8 @@ python scripts/new-paper.py --paper-id pi07 --title "π_{0.7}: a Steerable Gener
 Optional metadata can be filled during creation with `--year`, `--pdf`, and `--code`.
 The script renders `templates/paper-card.md` and `templates/paper-note.md`, so those templates are the scaffold source of truth.
 
+
+
 ## Adding Insights
 
 Use the insight scaffold script to create a working claim note:
