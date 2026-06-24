@@ -1,0 +1,150 @@
+{
+  "nodePositions": [
+    {
+      "id": "codes/readings/QWen.md",
+      "x": 394.3791198730469,
+      "y": -658.8091430664062
+    },
+    {
+      "id": "codes/types/Infra.md",
+      "x": -375.9255676269531,
+      "y": 721.0908813476562
+    },
+    {
+      "id": "codes/types/LLM.md",
+      "x": 544.1532592773438,
+      "y": -500.4093933105469
+    },
+    {
+      "id": "papers/cards/AGVP.md",
+      "x": -649.061279296875,
+      "y": -205.9412384033203
+    },
+    {
+      "id": "papers/cards/AgiBotWorld.md",
+      "x": 37.14494705200195,
+      "y": -682.1112670898438
+    },
+    {
+      "id": "papers/cards/KI.md",
+      "x": -566.7031860351562,
+      "y": -526.1337280273438
+    },
+    {
+      "id": "papers/cards/MemoryVLA.md",
+      "x": 854.1976928710938,
+      "y": 271.8037414550781
+    },
+    {
+      "id": "papers/cards/RMBench.md",
+      "x": 535.5496215820312,
+      "y": 421.70587158203125
+    },
+    {
+      "id": "papers/cards/RoboMemArena.md",
+      "x": 433.1886901855469,
+      "y": 268.2519226074219
+    },
+    {
+      "id": "papers/cards/RoboTwin.md",
+      "x": 167.04283142089844,
+      "y": 654.1444091796875
+    },
+    {
+      "id": "papers/cards/gr00t-n1.md",
+      "x": -165.45712280273438,
+      "y": -223.80776977539062
+    },
+    {
+      "id": "papers/cards/pi-MEM.md",
+      "x": 733.530517578125,
+      "y": -53.52676773071289
+    },
+    {
+      "id": "papers/cards/pi05.md",
+      "x": -296.81683349609375,
+      "y": -570.6605834960938
+    },
+    {
+      "id": "papers/cards/pi06.md",
+      "x": 528.572509765625,
+      "y": -11.690406799316406
+    },
+    {
+      "id": "papers/cards/starvla.md",
+      "x": -529.5292358398438,
+      "y": 554.3488159179688
+    },
+    {
+      "id": "papers/cards/wm-survey-2026.md",
+      "x": -224.31564331054688,
+      "y": 197.8557586669922
+    },
+    {
+      "id": "questions/世界模型与物理因果理解.md",
+      "x": -329.33380126953125,
+      "y": 0.1916908472776413
+    },
+    {
+      "id": "questions/安全&可解释性.md",
+      "x": -743.7584228515625,
+      "y": 30.064029693603516
+    },
+    {
+      "id": "questions/数据规模化.md",
+      "x": -73.46646881103516,
+      "y": -486.1669006347656
+    },
+    {
+      "id": "questions/评价体系.md",
+      "x": 273.0879821777344,
+      "y": 455.8526306152344
+    },
+    {
+      "id": "questions/闭环控制与实时性.md",
+      "x": 47.771366119384766,
+      "y": -32.72113800048828
+    },
+    {
+      "id": "papers/cards/FutureVLA.md",
+      "x": -538.9102783203125,
+      "y": 145.6568603515625
+    },
+    {
+      "id": "papers/cards/RTC.md",
+      "x": 125.34651947021484,
+      "y": 232.78277587890625
+    },
+    {
+      "id": "papers/cards/RealtimeVLA.md",
+      "x": 194.12208557128906,
+      "y": -207.33909606933594
+    },
+    {
+      "id": "questions/泛化.md",
+      "x": -428.2888488769531,
+      "y": -351.01922607421875
+    },
+    {
+      "id": "questions/持续学习.md",
+      "x": 661.5499267578125,
+      "y": 173.7537384033203
+    },
+    {
+      "id": "questions/基建.md",
+      "x": -310.5207214355469,
+      "y": 519.0867309570312
+    }
+  ],
+  "pinnedNodes": [],
+  "globalOptions": {},
+  "workspacesGraphData": {},
+  "automaticallyRestoreNodePositions": true,
+  "enableSaveOptions": false,
+  "enableWorkspaces": false,
+  "timesShowedRestoredNotification": 5,
+  "showSaveNotification": false,
+  "enableGraphSimulationCommands": false,
+  "enableAutoSave": false,
+  "autoSaveIntervalMinutes": 5
+}

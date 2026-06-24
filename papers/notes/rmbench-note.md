@@ -123,6 +123,21 @@ QWen3整合subtask instruction和current observation然后融合anchor 记忆（
 
 
 
+**Anchor Memory Fusion**
+
+Anchor Memory (A) 在子任务开始时（(t=0)）被初始化并固定，用于提供该子任务的初始状态参考。
+$$
+\tilde{z}_t^{anchor}
+= \text{CrossAttn}(z_{img,t}, A) + z_{img,t}
+$$
+
+
+
+
+classifier的输入就是3个token的concate
+
+
+
 
 
 #### 实验

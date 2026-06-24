@@ -209,7 +209,7 @@ for layer_id, layer in enumerate(vit_layers):
 
 
 
-还有就是做咖啡的时候掌握加咖啡的量
+还有就是做咖啡的时候掌握加咖啡的量，以及避免重复按按钮
 
 
 

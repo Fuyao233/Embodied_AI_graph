@@ -141,3 +141,105 @@
 **如何用decoder-only的架构做classification?**
 
 decoder-only的架构和Bert类的区别就在于casual mask，所以可以取 hidden_states 中除了<pad\>之外的最后一个token的表示作为整个句子的表示
+
+
+
+# QWen2_5_vl
+
+## configuration_qwen2_vl
+
+配置文件
+
+
+
+**Qwen2VLVisionConfig**
+
+- depth：视觉层数
+- embed_dim：视觉 patch embedding 维度
+- hidden_size：视觉输出隐层维度
+- hidden_act、mlp_ratio：视觉 MLP 结构
+- num_heads：视觉注意力头数
+- patch_size、temporal_patch_size：空间和时间 patch 切分方式
+- spatial_merge_size：后续视觉 token merge 的规模
+
+也就是说，它描述的是“图片/视频先怎么变成视觉特征”。
+
+
+
+**Qwen2VLTextConfig**
+
+这部分基本就是“Qwen2 文本主干怎么配”，只是为了 VL 加了 multimodal RoPE 相关兼容
+
+
+
+**Qwen2VLConfig**
+
+- text_config
+- vision_config
+- image_token_id
+- video_token_id
+- vision_start_token_id
+- vision_end_token_id
+- tie_word_embedding：输入词嵌入矩阵 embed_tokens.weight 和输出 lm_head.weight 要不要共享同一份参数（Qwen2-VL默认为False）
+
+它描述的是“整个 Qwen2-VL 模型怎么拼起来”，包括文本子模型、视觉子模型，以及多模态特殊 token 的 ID
+
+
+
+## processing_qwen2_vl
+
+描述输入是怎么拼起来
+
+
+
+**replace_image_token**
+
+是把文本里的一个“图片占位符”替换成“很多个 `<|image_pad|>` token（prompt输入的时候通常是用一个占位符表示image）
+
+```python
+def replace_image_token(self, image_inputs: dict, image_idx: int) -> str:
+    merge_length = self.image_processor.merge_size**2
+    num_image_tokens = image_inputs["image_grid_thw"][image_idx].prod() // merge_length
+    return self.image_token * num_image_tokens
+```
+
+- `image_inputs["image_grid_thw"][image_idx]`表示第`image_idx`对应的三维网格大小，size是`[T,H,W]`
+- `merge_size`指的是多少个patch会被合并
+
+grid_thw 和 patch_size 的关系：
+
+```python
+grid_h = resized_height // patch_size
+grid_w = resized_width // patch_size
+```
+
+
+
+**replace_video_token**
+
+同上
+
+
+
+**model_input_names**
+
+告诉后续模块这个处理器最终会产出哪些可作为模型输入的字段
+
+
+
+## modeling_qwen2_vl.py
+
+
+
+### 视觉 backbone
+
+
+
+
+
+### 文本侧
+
+
+
+### 总装配
+

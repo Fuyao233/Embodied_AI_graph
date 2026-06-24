@@ -13,6 +13,10 @@ created: 2026-05-07
 
 
 
+
+
+
+
 ### 整体框架
 
 - starVLA: 核心框架
@@ -38,6 +42,17 @@ created: 2026-05-07
 - gr00t_lerbot: 
 
   - data_config.py: 定义不同机器人用哪些 video/state/action/language 键，以及对应的 transform。ROBOT_TYPE_CONFIG_MAP 是总映射表。
+
+    - 定义各modality的key：
+
+      ```
+      video_keys = [...]
+      state_keys = [...]
+      action_keys = [...]
+      language_keys = [...]
+      ```
+
+    - 
 
   - datasets.py:
 

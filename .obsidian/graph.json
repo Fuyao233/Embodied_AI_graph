@@ -4,48 +4,48 @@
   "showTags": false,
   "showAttachments": false,
   "hideUnresolved": false,
-  "showOrphans": true,
+  "showOrphans": false,
   "collapse-color-groups": false,
   "colorGroups": [
     {
       "query": "path:/^questions\\//",
       "color": {
         "a": 1,
-        "rgb": 3381759
+        "rgb": 13911606
       }
     },
     {
       "query": "path:/^papers\\/cards\\//",
       "color": {
         "a": 1,
-        "rgb": 16750848
+        "rgb": 16510639
       }
     },
     {
       "query": "path:/^codes\\/types\\//",
       "color": {
         "a": 1,
-        "rgb": 4236116
+        "rgb": 15477
       }
     },
     {
       "query": "path:/^codes\\/readings\\//",
       "color": {
         "a": 1,
-        "rgb": 13662033
+        "rgb": 11522290
       }
     }
   ],
   "collapse-display": false,
   "showArrow": false,
   "textFadeMultiplier": -1.1,
-  "nodeSizeMultiplier": 2.12612456747405,
-  "lineSizeMultiplier": 2.55,
+  "nodeSizeMultiplier": 1.7078125,
+  "lineSizeMultiplier": 2.26927083333333,
   "collapse-forces": false,
-  "centerStrength": 0.260416666666667,
-  "repelStrength": 12.8125,
-  "linkStrength": 0.46875,
-  "linkDistance": 436,
-  "scale": 0.3628873693012087,
-  "close": true
+  "centerStrength": 0.34375,
+  "repelStrength": 10.7291666666667,
+  "linkStrength": 0.8125,
+  "linkDistance": 204,
+  "scale": 0.9999999999999868,
+  "close": false
 }
