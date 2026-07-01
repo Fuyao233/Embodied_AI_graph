@@ -94,7 +94,7 @@ created: 2026-05-07
             - W3: 再投影一次
 - framework：负责“把各组件组装成完整 VLA 模型”
   - M1.py：最像“原始 InternVLA-M1”路线，Qwen + DINO + Layerwise QFormer + DiT diffusion action head。
-  - QwenGR00T.py：Qwen hidden states -> GR00T flow-matching action head
+  - QwenGR00T.py：Qwen hidden states -> GR00T flow-matching action head，action head只取最后一层
   - QwenRDT.py：Qwen -> RDT2 action head，支持 KV cache、selected layers、latent CoT
   - QwenPI.py：功能最多的一个，集成了 layerwise flow-matching、progress-aware 版本、latent CoT、DINOv3 latent 监督，像研究实验主战场。
   - QwenOFT.py：OpenVLA-OFT 风格，把 action token 注入到 VLM 里，再做连续动作回归。
@@ -240,4 +240,11 @@ train的loss来自self.model.forward，想调节训练目标就在forward里面�
   MemoryQwen3VLForConditionalGeneration.forward(...)
   ```
 
-  
+
+
+
+#### 适配自己的数据集
+
+1. 改`./starVLA/dataloader/gr00t_lerobot/data_config.py`以及`mixtures.py`
+2. 改造数据集适配 lerobot 格式
+3. 添加 `modality.json` 并与 `data_config.py` 适配
