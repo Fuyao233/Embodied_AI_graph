@@ -99,8 +99,23 @@ class NewPaperCliTests(CliTestCase):
         self.assertIn(f"# {title}", card_content)
         self.assertIn(f"[{title} note](../notes/wm-survey-2026-note.md)", card_content)
 
+    def test_accepts_chinese_paper_ids(self) -> None:
+        result = self.run_python(
+            "scripts/new-paper.py",
+            "--paper-id",
+            "动作空间设计",
+            "--title",
+            "Demystifying Action Space Design for Robotic Manipulation Policies",
+            "--alphaxiv",
+            "https://www.alphaxiv.org/abs/2501.09747",
+        )
+
+        self.assertEqual(result.returncode, 0, self.format_process_failure(result))
+        self.assertTrue((self.vault_root / "papers/cards/动作空间设计.md").exists())
+        self.assertTrue((self.vault_root / "papers/notes/动作空间设计-note.md").exists())
+
     def test_fails_when_the_paper_already_exists(self) -> None:
-        self.write_file("papers/cards/pi07.md", "")
+        self.write_file("papers/cards/PI07.md", "")
 
         result = self.run_python(
             "scripts/new-paper.py",
@@ -115,7 +130,7 @@ class NewPaperCliTests(CliTestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("Paper already exists: PI07", result.stderr)
 
-    def test_fails_validation_for_invalid_paper_ids(self) -> None:
+    def test_fails_validation_for_paper_ids_that_contain_spaces(self) -> None:
         result = self.run_python(
             "scripts/new-paper.py",
             "--paper-id",
@@ -127,7 +142,7 @@ class NewPaperCliTests(CliTestCase):
         )
 
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("PaperId must match ^[A-Za-z0-9][A-Za-z0-9.-]*$", result.stderr)
+        self.assertIn("PaperId must start with a letter or digit", result.stderr)
 
     def test_fails_validation_for_whitespace_only_titles(self) -> None:
         result = self.run_python(

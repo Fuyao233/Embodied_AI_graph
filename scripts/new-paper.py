@@ -5,13 +5,27 @@ import sys
 from datetime import date
 
 from _vault_common import (
-    normalize_identifier,
     render_template,
     repo_root_from,
     require_non_empty,
     write_utf8,
     yaml_quote,
 )
+
+
+def normalize_paper_id(raw_value: str) -> str:
+    paper_id = raw_value.strip()
+    if not paper_id:
+        raise ValueError("PaperId must not be empty or whitespace")
+
+    error_message = (
+        "PaperId must start with a letter or digit and contain only letters, digits, '.' or '-'"
+    )
+    if not paper_id[0].isalnum():
+        raise ValueError(error_message)
+    if any(not (character.isalnum() or character in ".-") for character in paper_id):
+        raise ValueError(error_message)
+    return paper_id
 
 
 def parse_args() -> argparse.Namespace:
@@ -31,7 +45,7 @@ def main() -> int:
     args = parse_args()
 
     try:
-        paper_id = normalize_identifier(args.paper_id, "PaperId")
+        paper_id = normalize_paper_id(args.paper_id)
         title = require_non_empty(args.title, "Title")
         alphaxiv = require_non_empty(args.alphaxiv, "AlphaXiv")
         year = args.year.strip()
