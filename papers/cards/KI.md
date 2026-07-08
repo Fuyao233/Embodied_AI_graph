@@ -1,6 +1,6 @@
 ---
 type: paper-card
-paper_id: ki
+paper_id: KI
 title: "Knowledge Insulating Vision-Language-Action Models: Train Fast, Run Fast, Generalize Better"
 status: seed
 year:

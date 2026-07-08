@@ -11,7 +11,33 @@ created: 2026-05-07
 
 ## Reading Notes
 
+**主要贡献**：
 
+
+**1. 提出了“[广义 VLA](https://zhida.zhihu.com/search?content_id=277755964&content_type=Article&match_order=1&q=%E5%B9%BF%E4%B9%89+VLA&zhida_source=entity)”的统一理论与架构 (Generalized VLA Architecture)**
+
+- **理论统一**：通过引入辅助损失函数（Laux​ ），将 VLM（预测文本）和世界模型（预测未来视觉状态）从数学层面统一到同一个动作生成的策略分布公式中。
+- **极致的模块化**：彻底解耦了特征提取与动作生成。框架原生实现了四种最具代表性的动作头（Action Heads）：
+
+- `StarVLA-FAST`（基于词表的自回归离散动作生成）
+- `StarVLA-OFT`（极简连续多层感知机回归）
+- `StarVLA-π`（基于 DiT 的流匹配/扩散去噪）
+- `StarVLA-GR00T`（系统1与系统2结合的双系统推理）
+
+**2. 突破性的[多模态协同训练](https://zhida.zhihu.com/search?content_id=277755964&content_type=Article&match_order=1&q=%E5%A4%9A%E6%A8%A1%E6%80%81%E5%8D%8F%E5%90%8C%E8%AE%AD%E7%BB%83&zhida_source=entity)策略 (Multimodal Co-training Pipeline)**
+
+- 针对机器人微调中常见的“灾难性遗忘”（即模型丧失原有的空间推理和问答能力）问题，设计了**[双数据加载器](https://zhida.zhihu.com/search?content_id=277755964&content_type=Article&match_order=1&q=%E5%8F%8C%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%BD%BD%E5%99%A8&zhida_source=entity)（Dual-loader）**机制。
+- 允许在同一个优化步骤中，混合来自 Web 的 VLM 预训练数据和机器人轨迹数据进行协同训练，在大幅提升动作成功率（如在 LIBERO 上极少量步数即可达 96%+ 成功率）的同时，完美保留了模型的空间感知与常识推理能力。
+
+**3. 跨具身“[通才模型](https://zhida.zhihu.com/search?content_id=277755964&content_type=Article&match_order=1&q=%E9%80%9A%E6%89%8D%E6%A8%A1%E5%9E%8B&zhida_source=entity)”的训练能力 (Cross-Embodiment Generalist Capability)**
+
+- 通过简单的动作空间对齐策略（统一 Padding 至 32 维），打破了不同机器人自由度（DoF）和动作空间的壁垒。
+- 支持将来自不同硬件形态、不同任务环境（如 LIBERO, SimplerEnv, RoboTwin 2.0 等）的数据池化，成功训练出性能超越单一领域“专才”的跨基准“通才模型”。
+
+**4. 部署导向的标准化生态与 I/O 契约 (Standardized Evaluation & [Sim-to-Real](https://zhida.zhihu.com/search?content_id=277755964&content_type=Article&match_order=1&q=Sim-to-Real&zhida_source=entity))**
+
+- **统一的 I/O 接口**：强制模型输入仅为原始图像和文本，屏蔽了底层张量处理的复杂性。
+- **零代码修改部署**：采用基于 WebSocket 的客户端-服务器架构，使得模型在仿真环境（Sim）中验证后，**无需修改任何代码**即可直接接入真实的 ROS（机器人操作系统）进行物理机部署，彻底打通了 Sim-to-Real 的工程壁垒。集成了 7 大开箱即用的评估环境，为开源社区确立了新的基础设施标杆。
 
 
 
