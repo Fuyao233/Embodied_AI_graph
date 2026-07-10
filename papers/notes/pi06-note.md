@@ -142,11 +142,11 @@ Inference的时候设置 $I_t=\text{positve}$
 
 ### IMPLEMENTATION, MODEL, AND SYSTEM DETAILS
 
-<img src="D:\Embodied_AI_graph\papers\notes\pi06-note.assets\image-20260513175558946.png" alt="image-20260513175558946" style="zoom: 67%;" />
+<img src=".\pi06-note.assets\image-20260513175558946.png" alt="image-20260513175558946" style="zoom: 67%;" />
 
 metadata：文本化的任务上下文 / 条件控制信息，可能是执行风格或者环境条件等等，比较神秘（其实是 $\pi_{0.7}$ 的核心机制之一）
 
-<img src="D:\Embodied_AI_graph\papers\notes\pi06-note.assets\image-20260513173909964.png" alt="image-20260513173909964" style="zoom:50%;" />
+<img src=".\pi06-note.assets\image-20260513173909964.png" alt="image-20260513173909964" style="zoom:50%;" />
 
 #### pi06
 
@@ -169,7 +169,7 @@ $$
 
 
 
-## 任务数据规模
+ **RECAP 后训练阶段所收集数据构成**:
 
 | 任务                          | 数据细节                                                     |
 | ----------------------------- | ------------------------------------------------------------ |
@@ -178,6 +178,147 @@ $$
 | Failure-mode removal ablation | 约 1000 autonomous episodes，外加 280 + 378 correction episodes，3 台机器人 |
 | Box assembly                  | deployment 场景中直接收集；每轮 600 demonstrations + 360 correction episodes，3 台机器人 |
 | Cafe                          | 单轮迭代；429 correction episodes + 414 autonomous episodes  |
+
+真实数据规模并不小，并且不同任务的数据配方差异明显
+
+
+
+### Evaluation
+
+**Task**
+
+| 类别     | 任务变体     | 机器人需要完成的操作                               | 成功标准                                                     | 主要考察能力                              |
+| -------- | ------------ | -------------------------------------------------- | ------------------------------------------------------------ | ----------------------------------------- |
+| 衣物折叠 | T 恤和短裤   | 从篮子取出衣物、铺平、折叠并堆放                   | **200 秒内**正确折叠，并放到桌面右上角                       | 基础布料操作、对不同初始状态的适应性      |
+| 衣物折叠 | 多样衣物     | 处理毛巾、衬衫、毛衣、牛仔裤、袜子等 **11 类衣物** | 评测时主要使用较难的纽扣衬衫；需在 **500 秒内**折好并放入衣物堆 | 对不同形状、材质和结构衣物的泛化          |
+| 衣物折叠 | 定向失败消除 | 从固定状态折叠一件橙色 T 恤                        | **200 秒内**正确折叠，且衣领必须始终朝上                     | 检验 RECAP 能否消除“衣领朝下”这一特定错误 |
+| 咖啡制作 | 双份意式浓缩 | 取手柄、磨豆、压粉、锁入咖啡机、取杯、萃取并上杯   | **200 秒内**完成全部步骤，且不能掉落手柄或洒出咖啡           | 长时程规划、精细操作、力控制与液体处理    |
+| 纸箱组装 | 完整纸箱流程 | 从平纸板开始，折叠纸箱、贴标签并放入周转箱         | **600 秒内**完成组装、贴标和堆放                             | 形变物体操作、受力操作、多阶段任务执行    |
+
+
+
+**Camparision**
+
+| 模型                               | 训练方式                                               | 用途                         |
+| ---------------------------------- | ------------------------------------------------------ | ---------------------------- |
+| Pre-trained ($\pi_{0.5}$)          | 纯监督预训练，不使用 RL 或 RECAP                       | 较早一代 VLA 基线            |
+| Pre-trained ($\pi_{0.6}$)          | 更新的监督预训练模型，但没有 advantage indicator       | 衡量基础模型升级带来的收益   |
+| RL pre-trained ($\pi^{*}_{0.6}$)   | 在通用预训练阶段同时训练价值函数，并加入优势条件       | 衡量离线 RL 预训练是否有帮助 |
+| ($\pi^{*}_{0.6}$) Offline RL + SFT | 在 RL 预训练模型上，使用目标任务的人类演示进行监督微调 | 衡量目标任务示范数据的作用   |
+| ($\pi^{*}_{0.6}$) Ours             | 完整 RECAP，加入自主执行轨迹、奖励标签和专家纠正       | 衡量真实机器人经验带来的增益 |
+
+
+
+**AWR**
+
+AWR，即 Advantage-Weighted Regression：
+
+- 从不包含优势条件的预训练 $\pi_{0.6}$ 开始；
+- 使用论文价值函数计算出的 advantage；
+- 高优势动作获得更高训练权重；
+- 低优势动作被降低权重或基本忽略。
+
+它仍属于监督回归式更新，但与 RECAP 的区别是：AWR 通过**样本权重**表达动作质量，而 RECAP 把优势作为模型的**条件输入**。
+
+**PPO**
+
+作者实现的是适配 flow-matching VLA 的 PPO 变体：
+
+- 参考 DPPO/FPO；
+- 通过单步 diffusion objective 近似动作似然；
+- 使用 SPO 风格的 trust-region 约束，以提高离策略训练稳定性。
+
+设置 PPO 的目的，是检验传统策略梯度方法能否有效扩展到大型、包含自回归输出和 flow-matching 动作头的 VLA。
+
+
+
+
+
+**量化评估**
+
+指标：成功率、吞吐量（每小时成功执行的任务数量）
+
+![image-20260710142921771](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/pi06-note.assets/image-20260710142921771.png)
+
+![image-20260710142947754](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/pi06-note.assets/image-20260710142947754.png)
+
+没加SFT但是仍有成功率是因为预训练中有过类似的数据
+
+
+
+**1. 完整 RECAP 是否有效？**（Fig. 8）
+
+有效，而且收益主要来自**目标任务上的真实机器人经验**。
+
+从 $\pi^{*}_{0.6}$ Offline RL + SFT 到最终 RECAP：
+
+- 多样衣物折叠和 espresso 的吞吐量提升到原来的两倍以上；
+- 两个困难任务的失败率大约降低一半；
+- 简单衣物折叠在 SFT 后成功率已接近饱和，但 RECAP 仍显著提高执行速度；
+- 除多样衣物外，最终模型在其他任务上的成功率达到 90% 以上；
+- 纸箱任务中，最终模型在拾取、组装、贴标和放置各阶段都最稳定。
+
+这里最重要的不是“RL 预训练模型比监督预训练模型强多少”，而是：
+$$
+\text{Offline RL pretrain}
+\rightarrow
+\text{task SFT}
+\rightarrow
+\text{on-robot RECAP}
+$$
+这条完整流程能够不断提高真实部署性能。
+
+
+
+**2. 多轮训练是否继续提升？**(Fig 9, 10)
+
+可以，但不一定每一轮都单调提升。
+
+- T 恤和短裤任务只使用自主轨迹，两轮后吞吐量总体提高约 50%；第一轮成功率已经超过 90%，第二轮主要改善速度。
+- 纸箱任务第一轮吞吐量反而下降，第二轮才明显上升，最终吞吐量约为初始策略的两倍。
+- 这说明复杂长时程任务需要更多数据，单轮更新出现性能波动并不罕见。
+
+![image-20260710143957571](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/pi06-note.assets/image-20260710143957571.png)
+
+![image-20260710144012836](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/pi06-note.assets/image-20260710144012836.png)
+
+
+
+
+
+
+
+**3. Advantage conditioning 是否优于 AWR 和 PPO？**(Fig. 11)
+
+在论文的设置下，明显优于。
+
+- PPO 在离策略数据上很难稳定，必须使用很小的 trust-region 参数 $\eta=0.01$，但最终性能仍较差。
+- AWR 可以获得合理成功率，但策略执行较慢，因此吞吐量较低。
+- RECAP 的 advantage-conditioned policy 在吞吐量上显著领先。
+
+![image-20260710144102816](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/pi06-note.assets/image-20260710144102816.png)
+
+
+
+
+
+**4. RECAP 能否定向移除一种错误？**(Fig. 12)
+
+可以。
+
+在固定橙色 T 恤任务中，基线经常把衣领折反。经过两轮 RECAP、每轮 600 条自主轨迹后：
+
+- 成功率达到 97%；
+- 不需要新演示；
+- 不需要专家干预。
+
+因此，RECAP 不仅能整体改善策略，还能像“行为补丁”一样，针对某个失败模式进行优化。
+
+![image-20260710145343496](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/pi06-note.assets/image-20260710145343496.png)
+
+这种strict criteria通过标注success label来影响模型行为
+
+
 
 
 

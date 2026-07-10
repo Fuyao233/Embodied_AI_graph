@@ -357,6 +357,8 @@ embed_image, embed_language_tokens：分别调用 PaliGemma 的视觉塔提取�
 
 ### 关于训练
 
+注意 pytorch 训练脚本是没有 free module 而 jax 训练脚本有，但是 free module 默认是空。根据 OpenVLA 的结果，ViT 不应该被冻结，应该一起训
+
 > 在预训练 (pre-training) 阶段，π0.5 使用压缩式的动作分词器 (FAST action tokenizer) 将动作表示为离散的 token。
 >
 > 在后训练/推理阶段，π0.5 建立在 π0 模型设计的基础上，使用Flow Matching来表示动作分布，从而实现高效的实时推理和对细粒度连续动作序列的表示能力。
