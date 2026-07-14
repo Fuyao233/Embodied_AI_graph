@@ -11,3 +11,4 @@ title: "Infra"
 
 
 - [starVLA](../../papers/cards/starvla.md)：积木式VLA/WM框架
+- [WR](../readings/WR.md)

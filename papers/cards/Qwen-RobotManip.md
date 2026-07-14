@@ -4,7 +4,7 @@ paper_id: Qwen-RobotManip
 title: "RoboManipBaselines: A Unified Framework for Imitation Learning in Robotic Manipulation across Real and Simulation Environments"
 status: seed
 year: 
-alphaxiv: https://arxiv.org/abs/2509.17057
+alphaxiv: https://www.alphaxiv.org/abs/2606.17846
 pdf: 
 code: 
 created: 2026-07-08
@@ -72,6 +72,6 @@ created: 2026-07-08
 
 
 ## References
-- AlphaXiv: https://arxiv.org/abs/2509.17057
+- AlphaXiv: https://www.alphaxiv.org/abs/2606.17846
 - PDF: 
 - Code: 

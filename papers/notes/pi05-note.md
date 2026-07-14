@@ -329,6 +329,8 @@ embed_image, embed_language_tokens：分别调用 PaliGemma 的视觉塔提取�
 
 
 
+
+
 ## 论文细节
 
 ![img](https://pica.zhimg.com/v2-1a6032680ba3ace19a40fde1a9703cfa_r.jpg)
