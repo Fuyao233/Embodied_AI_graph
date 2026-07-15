@@ -11,8 +11,3 @@ created: {{created}}
 
 ## Reading Notes
 
-## Technical Details
-
-## Questions
-
-## Follow-up

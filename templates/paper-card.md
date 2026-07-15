@@ -17,9 +17,9 @@ created: {{created}}
 
 ## Core Insight
 
-## Why It Matters
 
-## Improvement Ideas
+
+
 
 ## References
 - AlphaXiv: {{alphaxiv}}

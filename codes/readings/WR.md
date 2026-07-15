@@ -104,6 +104,100 @@ python scripts/convert_to_lerobot.py \
     --output-dir /path/to/lerobot_dataset
 ```
 
+数据流：
+
+```
+input_dirs
+  └── episode_xxx/
+        ├── data_root_relative_6D.json
+        └── 图像文件
+              │
+              ▼
+       收集有效 episode
+              │
+              ▼
+   拆分为图像序列和身体数据序列
+              │
+              ▼
+   以每个前视相机帧为中心建立窗口
+     ├── 历史 states
+     └── 当前及未来 action
+              │
+              ▼
+       并行读取三路图像
+              │
+              ▼
+       dataset.add_frame()
+              │
+              ▼
+       dataset.save_episode()
+```
+
+
+
+默认数据配置：
+
+| 配置            | 数值      |
+| --------------- | --------- |
+| 图像/数据集 FPS | 20        |
+| 身体数据 FPS    | 50        |
+| 历史状态长度    | 50 帧     |
+| 未来动作长度    | 50 帧     |
+| 历史时长        | 约 1 秒   |
+| 动作时长        | 约 1 秒   |
+| 单状态维度      | 47        |
+| 状态总维度      | 2350      |
+| 单动作维度      | 114       |
+| 动作总维度      | 5700      |
+| 图像尺寸        | 256×256×3 |
+| 相机数量        | 3         |
+
+
+
+核心：`load_windowed_episode`
+
+1. `split_front_and_body`：
+
+   - `list_body` 保留 50 Hz 的完整时序
+   - 以 `front_head` 图像路径作为去重标志，`list_front` 是 20 Hz 的图像序列
+
+2. `build_windowed_frames`：
+
+   1. 图像和身体帧对应关系：
+
+      | 图像帧 t | 对应身体帧 center |
+      | -------- | ----------------- |
+      | 0        | 0                 |
+      | 1        | 2                 |
+      | 2        | 5                 |
+      | 3        | 8                 |
+      | 4        | 10                |
+
+   2. `_states_to_vector`：拼接imu（6），body_joint（29），hand_state（12），一共 47 维，连续 50 个时刻，一种 2350 维
+
+   3. `_action_to_vector`：mocap + hand_cmd
+
+      - `mocap[:3]`: 根节点或全局平移速度，共 3 维
+      - `mocap[3:].reshape(-1, 9)` ，后面根据 `SELECT_11_INDICES` 从 15 个关键点中选出 11 个，然后再展平
+      - `hand_cmd` 默认 12 维
+
+      一共是 114 维，连续50个时刻，一共 5700 维
+
+
+
+最终数据格式：
+
+```python
+formatted_frame = {
+    "observation.state": states,
+    "observation.images.head_img": head_img,
+    "observation.images.left_wrist_img": left_wrist_img,
+    "observation.images.right_wrist_img": right_wrist_img,
+    "action": action,
+    "task_vis_stickman": np.zeros((900,)),
+}
+```
+
 
 
 
@@ -388,11 +482,6 @@ POST 到 self.predict_url
                         ▼
 返回 {"mocap": [action_np]}, info_dict
 ```
-
-
-
-1. 异步手状态处理？
-2. 历史帧？会发送。会处理吗？
 
 
 
