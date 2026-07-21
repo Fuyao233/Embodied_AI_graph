@@ -21,6 +21,10 @@ created: 2026-05-29
 - 基于kinetic引入了一个包含12个高动态任务的新基准测试
 
 
+
+
+
+
 ## References
 - AlphaXiv: https://www.alphaxiv.org/abs/2506.07339
 - PDF: 

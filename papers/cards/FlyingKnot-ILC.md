@@ -17,9 +17,9 @@ created: 2026-07-15
 
 ## Core Insight
 
-## Why It Matters
 
-## Improvement Ideas
+
+
 
 ## References
 - AlphaXiv: https://www.alphaxiv.org/abs/2602.21302
