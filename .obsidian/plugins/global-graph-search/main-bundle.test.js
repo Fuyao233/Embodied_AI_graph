@@ -156,3 +156,142 @@ test("Escape restores a graph filter changed without Ctrl+F", async () => {
 
   assert.deepEqual(updates, [{ search: "default-filter" }]);
 });
+
+test("bundled plugin shows orphans, expands one-hop matches, and restores state", async () => {
+  const mainPath = path.join(__dirname, "main.js");
+  const source = fs.readFileSync(mainPath, "utf8");
+  const pluginModule = { exports: {} };
+  const registrations = [];
+  const inputListeners = new Map();
+  const updates = [];
+  const input = {
+    value: "default-filter",
+    focus() {},
+    addEventListener: (type, listener) => inputListeners.set(type, listener),
+    removeEventListener: (type, listener) => {
+      if (inputListeners.get(type) === listener) inputListeners.delete(type);
+    },
+  };
+  const options = {
+    search: "default-filter",
+    showOrphans: false,
+    scale: 2,
+  };
+  const renderer = { nodes: [] };
+  const fakeWindow = {
+    requestAnimationFrame: (callback) => callback(),
+  };
+
+  class Plugin {
+    constructor(app) {
+      this.app = app;
+    }
+
+    async loadData() {
+      return { defaultFilter: "default-filter" };
+    }
+
+    registerDomEvent(...args) {
+      registrations.push(args);
+    }
+
+    registerEvent() {}
+  }
+
+  function obsidianRequire(id) {
+    if (id === "obsidian") return { Plugin };
+    throw new Error(`Obsidian loader cannot resolve ${id}`);
+  }
+
+  const load = new Function("require", "module", "exports", source);
+  load(obsidianRequire, pluginModule, pluginModule.exports);
+
+  const graphLeaf = {
+    view: {
+      getViewType: () => "graph",
+      dataEngine: {
+        getOptions: () => options,
+        setOptions: (nextOptions) => {
+          updates.push(nextOptions);
+          Object.assign(options, nextOptions);
+          input.value = nextOptions.search;
+          if (nextOptions.search === "A") {
+            renderer.nodes = [{ id: "cards/A.md" }];
+          }
+        },
+      },
+      renderer,
+      containerEl: { querySelector: () => input },
+    },
+  };
+  const workspace = {
+    getLeavesOfType: () => [graphLeaf],
+    getMostRecentLeaf: () => graphLeaf,
+    on: () => ({}),
+    onLayoutReady: () => {},
+  };
+  const vault = {
+    getAbstractFileByPath: (id) => ({ path: id, extension: "md" }),
+  };
+  const metadataCache = {
+    resolvedLinks: {
+      "cards/A.md": { "notes/A-note.md": 1 },
+      "questions/Q.md": { "cards/A.md": 1 },
+    },
+    on: () => ({}),
+  };
+
+  global.window = fakeWindow;
+  try {
+    const plugin = new pluginModule.exports({
+      workspace,
+      vault,
+      metadataCache,
+    });
+    await plugin.onload();
+    const keydown = registrations[0][2];
+
+    keydown({
+      key: "f",
+      ctrlKey: true,
+      metaKey: false,
+      shiftKey: false,
+      altKey: false,
+    });
+
+    assert.equal(options.showOrphans, true);
+
+    input.value = "A";
+    inputListeners.get("input")();
+    await new Promise((resolve) => setImmediate(resolve));
+
+    assert.equal(
+      options.search,
+      "path:/^(?:cards\\/A\\.md|notes\\/A-note\\.md|questions\\/Q\\.md)$/",
+    );
+    assert.equal(input.value, "A");
+
+    keydown({
+      key: "Escape",
+      ctrlKey: false,
+      metaKey: false,
+      shiftKey: false,
+      altKey: false,
+    });
+
+    assert.equal(options.search, "default-filter");
+    assert.equal(options.showOrphans, false);
+  } finally {
+    delete global.window;
+  }
+
+  assert.equal(updates.some((update) => update.showOrphans === true), true);
+});
+
+test("manifest exposes the neighbor-search release version", () => {
+  const manifest = JSON.parse(
+    fs.readFileSync(path.join(__dirname, "manifest.json"), "utf8"),
+  );
+
+  assert.equal(manifest.version, "1.1.0");
+});

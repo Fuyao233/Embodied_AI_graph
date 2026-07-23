@@ -1,0 +1,60 @@
+const { Plugin } = require("obsidian");
+const { GraphAdapter } = require("./graph-adapter");
+const { SearchSessionController } = require("./session-controller");
+const {
+  SearchExpansionController,
+} = require("./search-expansion-controller");
+
+const DEFAULT_SETTINGS = {
+  defaultFilter:
+    "path:/^questions\\// OR path:/^papers\\/cards\\// OR " +
+    "path:/^codes\\/types\\// OR path:/^codes\\/readings\\//",
+};
+
+class GlobalGraphSearchPlugin extends Plugin {
+  async onload() {
+    const savedSettings = await this.loadData();
+    this.settings = { ...DEFAULT_SETTINGS, ...(savedSettings || {}) };
+    if (!savedSettings?.defaultFilter) await this.saveData(this.settings);
+
+    this.adapter = new GraphAdapter({
+      workspace: this.app.workspace,
+      vault: this.app.vault,
+    });
+    this.expansionController = new SearchExpansionController({
+      adapter: this.adapter,
+      getResolvedLinks: () => this.app.metadataCache?.resolvedLinks || {},
+      scheduleFrame: (callback) => window.requestAnimationFrame(callback),
+    });
+    this.controller = new SearchSessionController({
+      adapter: this.adapter,
+      defaultFilter: this.settings.defaultFilter,
+      schedule: (callback) => window.requestAnimationFrame(callback),
+      expansionController: this.expansionController,
+    });
+
+    this.registerDomEvent(
+      window,
+      "keydown",
+      (event) => this.controller.handleKeydown(event),
+      true,
+    );
+    this.registerEvent(
+      this.app.workspace.on("layout-change", () => this.controller.syncGraphs()),
+    );
+    if (this.app.metadataCache?.on) {
+      this.registerEvent(
+        this.app.metadataCache.on("resolved", () =>
+          this.expansionController.invalidateLinks(),
+        ),
+      );
+    }
+    this.app.workspace.onLayoutReady(() => this.controller.syncGraphs());
+  }
+
+  onunload() {
+    this.controller?.restoreAll();
+  }
+}
+
+module.exports = GlobalGraphSearchPlugin;
