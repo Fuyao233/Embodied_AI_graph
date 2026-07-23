@@ -12,18 +12,30 @@ function makeHarness() {
   const scheduled = [];
   let activeGraph = graphA;
   let graphLeaves = [graphA];
+  const options = new Map([
+    [graphA, { search: DEFAULT_FILTER, showOrphans: false }],
+    [graphB, { search: DEFAULT_FILTER, showOrphans: true }],
+  ]);
 
   const adapter = {
     getActiveGraphLeaf: () => activeGraph,
     getGlobalGraphLeaves: () => graphLeaves,
+    getOptions: (leaf) => options.get(leaf),
+    patchOptions: (leaf, patch) =>
+      calls.push(["patchOptions", leaf.id, patch]),
     setSearch: (leaf, search) => calls.push(["setSearch", leaf.id, search]),
     focusSearch: (leaf) => calls.push(["focusSearch", leaf.id]),
+  };
+  const expansionController = {
+    start: (leaf) => calls.push(["expansionStart", leaf.id]),
+    stop: () => calls.push(["expansionStop"]),
   };
 
   const controller = new SearchSessionController({
     adapter,
     defaultFilter: DEFAULT_FILTER,
     schedule: (callback) => scheduled.push(callback),
+    expansionController,
   });
 
   return {
@@ -36,6 +48,9 @@ function makeHarness() {
     },
     setActiveGraph(leaf) {
       activeGraph = leaf;
+    },
+    setShowOrphans(leaf, value) {
+      options.get(leaf).showOrphans = value;
     },
     setGraphLeaves(leaves) {
       graphLeaves = leaves;
@@ -81,8 +96,9 @@ test("Ctrl+F starts a temporary full-graph search", () => {
   harness.flush();
 
   assert.deepEqual(harness.calls, [
-    ["setSearch", "graph-a", ""],
+    ["patchOptions", "graph-a", { search: "", showOrphans: true }],
     ["focusSearch", "graph-a"],
+    ["expansionStart", "graph-a"],
   ]);
 });
 
@@ -96,7 +112,30 @@ test("Escape restores the default filter", () => {
   harness.flush();
 
   assert.deepEqual(harness.calls, [
-    ["setSearch", "graph-a", DEFAULT_FILTER],
+    ["expansionStop"],
+    ["patchOptions", "graph-a", {
+      search: DEFAULT_FILTER,
+      showOrphans: false,
+    }],
+  ]);
+});
+
+test("Escape restores an originally enabled orphan setting", () => {
+  const harness = makeHarness();
+  harness.setShowOrphans(harness.graphA, true);
+  harness.controller.handleKeydown(findEvent());
+  harness.flush();
+  harness.calls.length = 0;
+
+  harness.controller.handleKeydown(escapeEvent());
+  harness.flush();
+
+  assert.deepEqual(harness.calls, [
+    ["expansionStop"],
+    ["patchOptions", "graph-a", {
+      search: DEFAULT_FILTER,
+      showOrphans: true,
+    }],
   ]);
 });
 
@@ -133,9 +172,14 @@ test("repeated Ctrl+F never replaces the default filter", () => {
   harness.flush();
 
   assert.deepEqual(harness.calls, [
-    ["setSearch", "graph-a", ""],
+    ["patchOptions", "graph-a", { search: "", showOrphans: true }],
     ["focusSearch", "graph-a"],
-    ["setSearch", "graph-a", DEFAULT_FILTER],
+    ["expansionStart", "graph-a"],
+    ["expansionStop"],
+    ["patchOptions", "graph-a", {
+      search: DEFAULT_FILTER,
+      showOrphans: false,
+    }],
   ]);
 });
 
@@ -150,8 +194,10 @@ test("a delayed restore cannot clobber a newly started search", () => {
   harness.flush();
 
   assert.deepEqual(harness.calls, [
-    ["setSearch", "graph-a", ""],
+    ["expansionStop"],
+    ["patchOptions", "graph-a", { search: "", showOrphans: true }],
     ["focusSearch", "graph-a"],
+    ["expansionStart", "graph-a"],
   ]);
 });
 
@@ -180,6 +226,7 @@ test("closing a searched graph recovers the remaining graphs", () => {
   harness.controller.syncGraphs();
 
   assert.deepEqual(harness.calls, [
+    ["expansionStop"],
     ["setSearch", "graph-b", DEFAULT_FILTER],
   ]);
   assert.equal(harness.controller.isSearching(), false);
@@ -195,7 +242,11 @@ test("restoreAll resets every open graph and ends the session", () => {
   harness.controller.restoreAll();
 
   assert.deepEqual(harness.calls, [
-    ["setSearch", "graph-a", DEFAULT_FILTER],
+    ["expansionStop"],
+    ["patchOptions", "graph-a", {
+      search: DEFAULT_FILTER,
+      showOrphans: false,
+    }],
     ["setSearch", "graph-b", DEFAULT_FILTER],
   ]);
   assert.equal(harness.controller.isSearching(), false);

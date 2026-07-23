@@ -1,9 +1,14 @@
 class SearchSessionController {
-  constructor({ adapter, defaultFilter, schedule }) {
+  constructor({ adapter, defaultFilter, schedule, expansionController }) {
     this.adapter = adapter;
     this.defaultFilter = defaultFilter;
     this.schedule = schedule;
+    this.expansionController = expansionController || {
+      start() {},
+      stop() {},
+    };
     this.searchingLeaf = null;
+    this.previousShowOrphans = undefined;
     this.revision = 0;
   }
 
@@ -27,15 +32,27 @@ class SearchSessionController {
     if (!leaf) return false;
 
     if (this.searchingLeaf && this.searchingLeaf !== leaf) {
-      this.adapter.setSearch(this.searchingLeaf, this.defaultFilter);
+      this.expansionController.stop();
+      this.adapter.patchOptions(this.searchingLeaf, {
+        search: this.defaultFilter,
+        showOrphans: this.previousShowOrphans,
+      });
+      this.searchingLeaf = null;
+      this.previousShowOrphans = undefined;
+    }
+
+    if (!this.searchingLeaf) {
+      this.previousShowOrphans =
+        this.adapter.getOptions(leaf)?.showOrphans ?? false;
     }
 
     this.searchingLeaf = leaf;
     const revision = ++this.revision;
     this.schedule(() => {
       if (this.revision !== revision || this.searchingLeaf !== leaf) return;
-      this.adapter.setSearch(leaf, "");
+      this.adapter.patchOptions(leaf, { search: "", showOrphans: true });
       this.adapter.focusSearch(leaf);
+      this.expansionController.start(leaf);
     });
     return true;
   }
@@ -44,11 +61,22 @@ class SearchSessionController {
     const leaf = this.searchingLeaf || this.adapter.getActiveGraphLeaf();
     if (!leaf) return false;
 
+    const hadSession = this.searchingLeaf !== null;
+    const previousShowOrphans = this.previousShowOrphans;
     this.searchingLeaf = null;
+    this.previousShowOrphans = undefined;
+    if (hadSession) this.expansionController.stop();
     const revision = ++this.revision;
     this.schedule(() => {
       if (this.revision !== revision || this.searchingLeaf) return;
-      this.adapter.setSearch(leaf, this.defaultFilter);
+      if (hadSession) {
+        this.adapter.patchOptions(leaf, {
+          search: this.defaultFilter,
+          showOrphans: previousShowOrphans,
+        });
+      } else {
+        this.adapter.setSearch(leaf, this.defaultFilter);
+      }
     });
     return true;
   }
@@ -56,7 +84,9 @@ class SearchSessionController {
   syncGraphs() {
     const leaves = this.adapter.getGlobalGraphLeaves();
     if (this.searchingLeaf && !leaves.includes(this.searchingLeaf)) {
+      this.expansionController.stop();
       this.searchingLeaf = null;
+      this.previousShowOrphans = undefined;
       this.revision += 1;
     }
 
@@ -68,10 +98,21 @@ class SearchSessionController {
   }
 
   restoreAll() {
+    const searchedLeaf = this.searchingLeaf;
+    const previousShowOrphans = this.previousShowOrphans;
+    if (searchedLeaf) this.expansionController.stop();
     this.searchingLeaf = null;
+    this.previousShowOrphans = undefined;
     this.revision += 1;
     for (const leaf of this.adapter.getGlobalGraphLeaves()) {
-      this.adapter.setSearch(leaf, this.defaultFilter);
+      if (leaf === searchedLeaf) {
+        this.adapter.patchOptions(leaf, {
+          search: this.defaultFilter,
+          showOrphans: previousShowOrphans,
+        });
+      } else {
+        this.adapter.setSearch(leaf, this.defaultFilter);
+      }
     }
   }
 
