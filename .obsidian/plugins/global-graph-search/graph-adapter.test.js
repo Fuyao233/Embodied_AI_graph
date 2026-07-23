@@ -109,3 +109,81 @@ test("focusSearch fails safely when no compatible input exists", () => {
   assert.equal(adapter.focusSearch(graph.leaf), false);
   assert.equal(warnings.length, 1);
 });
+
+test("patchOptions updates search and orphan visibility atomically", () => {
+  const graph = makeLeaf({
+    options: { search: "old", showOrphans: false, scale: 2 },
+  });
+  const adapter = new GraphAdapter({ workspace: {} });
+
+  assert.equal(
+    adapter.patchOptions(graph.leaf, { search: "", showOrphans: true }),
+    true,
+  );
+  assert.deepEqual(graph.updates, [
+    { search: "", showOrphans: true, scale: 2 },
+  ]);
+});
+
+test("getOptions reads the current graph options", () => {
+  const options = { search: "old", showOrphans: false };
+  const graph = makeLeaf({ options });
+  const adapter = new GraphAdapter({ workspace: {} });
+
+  assert.equal(adapter.getOptions(graph.leaf), options);
+});
+
+test("reads and writes the visible search input without dispatching", () => {
+  const input = {
+    value: "raw",
+    focus() {},
+    addEventListener() {},
+    removeEventListener() {},
+  };
+  const graph = makeLeaf({ input });
+  const adapter = new GraphAdapter({ workspace: {} });
+
+  assert.equal(adapter.getSearchInputValue(graph.leaf), "raw");
+  assert.equal(adapter.setSearchInputValue(graph.leaf, "next"), true);
+  assert.equal(input.value, "next");
+});
+
+test("listens to and disposes visible search input events", () => {
+  const calls = [];
+  const listener = () => {};
+  const input = {
+    value: "",
+    focus() {},
+    addEventListener: (...args) => calls.push(["add", ...args]),
+    removeEventListener: (...args) => calls.push(["remove", ...args]),
+  };
+  const graph = makeLeaf({ input });
+  const adapter = new GraphAdapter({ workspace: {} });
+
+  const dispose = adapter.listenSearchInput(graph.leaf, listener);
+  dispose();
+
+  assert.deepEqual(calls, [
+    ["add", "input", listener],
+    ["remove", "input", listener],
+  ]);
+});
+
+test("returns rendered markdown file IDs only", () => {
+  const graph = makeLeaf();
+  graph.leaf.view.renderer = {
+    nodes: [{ id: "cards/A.md" }, { id: "#tag" }, { id: "missing.md" }],
+  };
+  const adapter = new GraphAdapter({
+    workspace: {},
+    vault: {
+      getAbstractFileByPath: (id) =>
+        id === "cards/A.md" ? { path: id, extension: "md" } : null,
+    },
+  });
+
+  assert.deepEqual(
+    adapter.getRenderedFileIds(graph.leaf),
+    new Set(["cards/A.md"]),
+  );
+});
