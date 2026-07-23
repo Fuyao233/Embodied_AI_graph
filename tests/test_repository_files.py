@@ -6,6 +6,13 @@ import unittest
 from tests.support import REPO_ROOT
 
 
+DEFAULT_GRAPH_FILTER = (
+    "path:/^questions\\// OR path:/^papers\\/cards\\// OR "
+    "path:/^codes\\/types\\// OR path:/^codes\\/readings\\//"
+)
+GRAPH_SEARCH_PLUGIN_ID = "global-graph-search"
+
+
 class RepositoryFileTests(unittest.TestCase):
     def test_code_type_template_contains_required_frontmatter_and_sections(self) -> None:
         content = (REPO_ROOT / "templates" / "code-type.md").read_text(encoding="utf-8")
@@ -35,7 +42,7 @@ class RepositoryFileTests(unittest.TestCase):
 
         self.assertEqual(
             graph["search"],
-            "path:/^questions\\// OR path:/^papers\\/cards\\// OR path:/^codes\\/types\\// OR path:/^codes\\/readings\\//",
+            DEFAULT_GRAPH_FILTER,
         )
         self.assertEqual(
             [group["query"] for group in graph["colorGroups"]],
@@ -46,3 +53,24 @@ class RepositoryFileTests(unittest.TestCase):
                 "path:/^codes\\/readings\\//",
             ],
         )
+
+    def test_global_graph_search_plugin_is_installed_and_enabled(self) -> None:
+        plugin_dir = REPO_ROOT / ".obsidian" / "plugins" / GRAPH_SEARCH_PLUGIN_ID
+        manifest = json.loads(
+            (plugin_dir / "manifest.json").read_text(encoding="utf-8")
+        )
+        settings = json.loads(
+            (plugin_dir / "data.json").read_text(encoding="utf-8")
+        )
+        enabled_plugins = json.loads(
+            (REPO_ROOT / ".obsidian" / "community-plugins.json").read_text(
+                encoding="utf-8"
+            )
+        )
+
+        self.assertEqual(manifest["id"], GRAPH_SEARCH_PLUGIN_ID)
+        self.assertEqual(settings["defaultFilter"], DEFAULT_GRAPH_FILTER)
+        self.assertIn(GRAPH_SEARCH_PLUGIN_ID, enabled_plugins)
+        self.assertTrue((plugin_dir / "main.js").is_file())
+        self.assertTrue((plugin_dir / "session-controller.js").is_file())
+        self.assertTrue((plugin_dir / "graph-adapter.js").is_file())

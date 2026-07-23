@@ -1,10 +1,9 @@
 {
   "collapse-filter": false,
-  "search": "",
+  "search": "path:/^questions\\// OR path:/^papers\\/cards\\// OR path:/^codes\\/types\\// OR path:/^codes\\/readings\\//",
   "showTags": false,
   "showAttachments": false,
-  "hideUnresolved": true,
-  "showOrphans": false,
+  "hideUnresolved": true,  "showOrphans": false,
   "collapse-color-groups": false,
   "colorGroups": [
     {

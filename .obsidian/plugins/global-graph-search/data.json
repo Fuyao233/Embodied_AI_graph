@@ -1,0 +1,3 @@
+{
+  "defaultFilter": "path:/^questions\\// OR path:/^papers\\/cards\\// OR path:/^codes\\/types\\// OR path:/^codes\\/readings\\//"
+}

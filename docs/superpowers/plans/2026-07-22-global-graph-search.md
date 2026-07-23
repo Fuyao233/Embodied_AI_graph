@@ -1,4 +1,4 @@
-# Temporary Global Graph Search Implementation Plan
+# Global Graph Search Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -12,13 +12,13 @@
 
 ## File Map
 
-- Create `.obsidian/plugins/temporary-global-graph-search/session-controller.js`: pure search-session state machine.
-- Create `.obsidian/plugins/temporary-global-graph-search/session-controller.test.js`: state-transition tests using a fake adapter and scheduler.
-- Create `.obsidian/plugins/temporary-global-graph-search/graph-adapter.js`: Obsidian Graph View API and DOM compatibility boundary.
-- Create `.obsidian/plugins/temporary-global-graph-search/graph-adapter.test.js`: adapter tests using fake leaves, engines, and inputs.
-- Create `.obsidian/plugins/temporary-global-graph-search/main.js`: plugin lifecycle and event wiring.
-- Create `.obsidian/plugins/temporary-global-graph-search/manifest.json`: Obsidian plugin metadata.
-- Create `.obsidian/plugins/temporary-global-graph-search/data.json`: persistent default allowlist.
+- Create `.obsidian/plugins/global-graph-search/session-controller.js`: pure search-session state machine.
+- Create `.obsidian/plugins/global-graph-search/session-controller.test.js`: state-transition tests using a fake adapter and scheduler.
+- Create `.obsidian/plugins/global-graph-search/graph-adapter.js`: Obsidian Graph View API and DOM compatibility boundary.
+- Create `.obsidian/plugins/global-graph-search/graph-adapter.test.js`: adapter tests using fake leaves, engines, and inputs.
+- Create `.obsidian/plugins/global-graph-search/main.js`: plugin lifecycle and event wiring.
+- Create `.obsidian/plugins/global-graph-search/manifest.json`: Obsidian plugin metadata.
+- Create `.obsidian/plugins/global-graph-search/data.json`: persistent default allowlist.
 - Modify `.obsidian/community-plugins.json`: enable the local plugin.
 - Modify `.obsidian/graph.json`: restore the default allowlist immediately.
 - Modify `tests/test_repository_files.py`: verify plugin installation and consistent filter configuration.
@@ -38,13 +38,13 @@ DEFAULT_GRAPH_FILTER = (
     "path:/^questions\\// OR path:/^papers\\/cards\\// OR "
     "path:/^codes\\/types\\// OR path:/^codes\\/readings\\//"
 )
-GRAPH_SEARCH_PLUGIN_ID = "temporary-global-graph-search"
+GRAPH_SEARCH_PLUGIN_ID = "global-graph-search"
 ```
 
 Replace the literal expected search string in `test_graph_config_includes_code_paths_and_four_color_groups` with `DEFAULT_GRAPH_FILTER`, then add this test to `RepositoryFileTests`:
 
 ```python
-    def test_temporary_global_graph_search_plugin_is_installed_and_enabled(self) -> None:
+    def test_global_graph_search_plugin_is_installed_and_enabled(self) -> None:
         plugin_dir = (
             REPO_ROOT
             / ".obsidian"
@@ -79,7 +79,7 @@ Run:
 python -m unittest tests.test_repository_files -v
 ```
 
-Expected: `test_graph_config_includes_code_paths_and_four_color_groups` fails because the current graph search is empty, and `test_temporary_global_graph_search_plugin_is_installed_and_enabled` fails because the plugin manifest does not exist.
+Expected: `test_graph_config_includes_code_paths_and_four_color_groups` fails because the current graph search is empty, and `test_global_graph_search_plugin_is_installed_and_enabled` fails because the plugin manifest does not exist.
 
 - [ ] **Step 3: Commit the failing integration checks**
 
@@ -91,12 +91,12 @@ git commit -m "test: define temporary graph search contract"
 ### Task 2: Implement the search-session controller with TDD
 
 **Files:**
-- Create: `.obsidian/plugins/temporary-global-graph-search/session-controller.test.js`
-- Create: `.obsidian/plugins/temporary-global-graph-search/session-controller.js`
+- Create: `.obsidian/plugins/global-graph-search/session-controller.test.js`
+- Create: `.obsidian/plugins/global-graph-search/session-controller.js`
 
 - [ ] **Step 1: Write the controller tests**
 
-Create `.obsidian/plugins/temporary-global-graph-search/session-controller.test.js`:
+Create `.obsidian/plugins/global-graph-search/session-controller.test.js`:
 
 ```javascript
 const test = require("node:test");
@@ -285,14 +285,14 @@ test("restoreAll resets every open graph and ends the session", () => {
 Run:
 
 ```bash
-node --test .obsidian/plugins/temporary-global-graph-search/session-controller.test.js
+node --test .obsidian/plugins/global-graph-search/session-controller.test.js
 ```
 
 Expected: FAIL with `Cannot find module './session-controller'`.
 
 - [ ] **Step 3: Implement the minimal controller**
 
-Create `.obsidian/plugins/temporary-global-graph-search/session-controller.js`:
+Create `.obsidian/plugins/global-graph-search/session-controller.js`:
 
 ```javascript
 class SearchSessionController {
@@ -384,7 +384,7 @@ module.exports = { SearchSessionController };
 Run:
 
 ```bash
-node --test .obsidian/plugins/temporary-global-graph-search/session-controller.test.js
+node --test .obsidian/plugins/global-graph-search/session-controller.test.js
 ```
 
 Expected: 9 tests pass and 0 fail.
@@ -392,19 +392,19 @@ Expected: 9 tests pass and 0 fail.
 - [ ] **Step 5: Commit the controller**
 
 ```bash
-git add .obsidian/plugins/temporary-global-graph-search/session-controller.js .obsidian/plugins/temporary-global-graph-search/session-controller.test.js
+git add .obsidian/plugins/global-graph-search/session-controller.js .obsidian/plugins/global-graph-search/session-controller.test.js
 git commit -m "feat: add graph search session controller"
 ```
 
 ### Task 3: Implement the graph compatibility adapter with TDD
 
 **Files:**
-- Create: `.obsidian/plugins/temporary-global-graph-search/graph-adapter.test.js`
-- Create: `.obsidian/plugins/temporary-global-graph-search/graph-adapter.js`
+- Create: `.obsidian/plugins/global-graph-search/graph-adapter.test.js`
+- Create: `.obsidian/plugins/global-graph-search/graph-adapter.js`
 
 - [ ] **Step 1: Write the graph adapter tests**
 
-Create `.obsidian/plugins/temporary-global-graph-search/graph-adapter.test.js`:
+Create `.obsidian/plugins/global-graph-search/graph-adapter.test.js`:
 
 ```javascript
 const test = require("node:test");
@@ -513,14 +513,14 @@ test("focusSearch fails safely when no compatible input exists", () => {
 Run:
 
 ```bash
-node --test .obsidian/plugins/temporary-global-graph-search/graph-adapter.test.js
+node --test .obsidian/plugins/global-graph-search/graph-adapter.test.js
 ```
 
 Expected: FAIL with `Cannot find module './graph-adapter'`.
 
 - [ ] **Step 3: Implement the graph adapter**
 
-Create `.obsidian/plugins/temporary-global-graph-search/graph-adapter.js`:
+Create `.obsidian/plugins/global-graph-search/graph-adapter.js`:
 
 ```javascript
 const SEARCH_INPUT_SELECTOR = [
@@ -554,14 +554,14 @@ class GraphAdapter {
     try {
       const engine = leaf?.view?.dataEngine;
       if (!engine?.getOptions || !engine?.setOptions) {
-        this.warn("Temporary Global Graph Search: graph data engine unavailable");
+        this.warn("Global Graph Search: graph data engine unavailable");
         return false;
       }
       const options = engine.getOptions() || {};
       engine.setOptions({ ...options, search });
       return true;
     } catch (error) {
-      this.warn(`Temporary Global Graph Search: failed to update graph filter: ${error}`);
+      this.warn(`Global Graph Search: failed to update graph filter: ${error}`);
       return false;
     }
   }
@@ -569,7 +569,7 @@ class GraphAdapter {
   focusSearch(leaf) {
     const input = leaf?.view?.containerEl?.querySelector?.(SEARCH_INPUT_SELECTOR);
     if (!input?.focus) {
-      this.warn("Temporary Global Graph Search: graph search input unavailable");
+      this.warn("Global Graph Search: graph search input unavailable");
       return false;
     }
     input.focus({ preventScroll: true });
@@ -585,7 +585,7 @@ module.exports = { GraphAdapter, SEARCH_INPUT_SELECTOR };
 Run:
 
 ```bash
-node --test .obsidian/plugins/temporary-global-graph-search/*.test.js
+node --test .obsidian/plugins/global-graph-search/*.test.js
 ```
 
 Expected: 15 tests pass and 0 fail.
@@ -593,22 +593,22 @@ Expected: 15 tests pass and 0 fail.
 - [ ] **Step 5: Commit the adapter**
 
 ```bash
-git add .obsidian/plugins/temporary-global-graph-search/graph-adapter.js .obsidian/plugins/temporary-global-graph-search/graph-adapter.test.js
+git add .obsidian/plugins/global-graph-search/graph-adapter.js .obsidian/plugins/global-graph-search/graph-adapter.test.js
 git commit -m "feat: isolate Obsidian graph access"
 ```
 
 ### Task 4: Wire and enable the Obsidian plugin
 
 **Files:**
-- Create: `.obsidian/plugins/temporary-global-graph-search/main.js`
-- Create: `.obsidian/plugins/temporary-global-graph-search/manifest.json`
-- Create: `.obsidian/plugins/temporary-global-graph-search/data.json`
+- Create: `.obsidian/plugins/global-graph-search/main.js`
+- Create: `.obsidian/plugins/global-graph-search/manifest.json`
+- Create: `.obsidian/plugins/global-graph-search/data.json`
 - Modify: `.obsidian/community-plugins.json`
 - Modify: `.obsidian/graph.json`
 
 - [ ] **Step 1: Create the plugin entry point**
 
-Create `.obsidian/plugins/temporary-global-graph-search/main.js`:
+Create `.obsidian/plugins/global-graph-search/main.js`:
 
 ```javascript
 const { Plugin } = require("obsidian");
@@ -622,7 +622,7 @@ const DEFAULT_SETTINGS = {
     "path:/^codes\\/types\\// OR path:/^codes\\/readings\\//",
 };
 
-class TemporaryGlobalGraphSearchPlugin extends Plugin {
+class GlobalGraphSearchPlugin extends Plugin {
   async onload() {
     const savedSettings = await this.loadData();
     this.settings = { ...DEFAULT_SETTINGS, ...(savedSettings || {}) };
@@ -652,17 +652,17 @@ class TemporaryGlobalGraphSearchPlugin extends Plugin {
   }
 }
 
-module.exports = TemporaryGlobalGraphSearchPlugin;
+module.exports = GlobalGraphSearchPlugin;
 ```
 
 - [ ] **Step 2: Create manifest and settings data**
 
-Create `.obsidian/plugins/temporary-global-graph-search/manifest.json`:
+Create `.obsidian/plugins/global-graph-search/manifest.json`:
 
 ```json
 {
-  "id": "temporary-global-graph-search",
-  "name": "Temporary Global Graph Search",
+  "id": "global-graph-search",
+  "name": "Global Graph Search",
   "version": "1.0.0",
   "minAppVersion": "1.4.0",
   "description": "Temporarily searches every global graph node and restores the default filter on Escape.",
@@ -671,7 +671,7 @@ Create `.obsidian/plugins/temporary-global-graph-search/manifest.json`:
 }
 ```
 
-Create `.obsidian/plugins/temporary-global-graph-search/data.json`:
+Create `.obsidian/plugins/global-graph-search/data.json`:
 
 ```json
 {
@@ -686,7 +686,7 @@ Set `.obsidian/community-plugins.json` to:
 ```json
 [
   "persistent-graph",
-  "temporary-global-graph-search"
+  "global-graph-search"
 ]
 ```
 
@@ -703,9 +703,9 @@ Preserve every unrelated Graph View option in that file.
 Run:
 
 ```bash
-node --check .obsidian/plugins/temporary-global-graph-search/main.js
-node --check .obsidian/plugins/temporary-global-graph-search/graph-adapter.js
-node --check .obsidian/plugins/temporary-global-graph-search/session-controller.js
+node --check .obsidian/plugins/global-graph-search/main.js
+node --check .obsidian/plugins/global-graph-search/graph-adapter.js
+node --check .obsidian/plugins/global-graph-search/session-controller.js
 python -m unittest tests.test_repository_files -v
 ```
 
@@ -714,14 +714,14 @@ Expected: all JavaScript syntax checks exit 0 and all repository-file tests pass
 - [ ] **Step 5: Commit plugin wiring and configuration**
 
 ```bash
-git add .obsidian/plugins/temporary-global-graph-search/main.js .obsidian/plugins/temporary-global-graph-search/manifest.json .obsidian/plugins/temporary-global-graph-search/data.json .obsidian/community-plugins.json .obsidian/graph.json
+git add .obsidian/plugins/global-graph-search/main.js .obsidian/plugins/global-graph-search/manifest.json .obsidian/plugins/global-graph-search/data.json .obsidian/community-plugins.json .obsidian/graph.json
 git commit -m "feat: enable temporary global graph search"
 ```
 
 ### Task 5: Verify the complete implementation
 
 **Files:**
-- Test: `.obsidian/plugins/temporary-global-graph-search/*.test.js`
+- Test: `.obsidian/plugins/global-graph-search/*.test.js`
 - Test: `tests/`
 
 - [ ] **Step 1: Run plugin unit tests**
@@ -729,7 +729,7 @@ git commit -m "feat: enable temporary global graph search"
 Run:
 
 ```bash
-node --test .obsidian/plugins/temporary-global-graph-search/*.test.js
+node --test .obsidian/plugins/global-graph-search/*.test.js
 ```
 
 Expected: 15 tests pass and 0 fail.
@@ -759,7 +759,7 @@ Expected: no whitespace errors. `git status` may still show the user's pre-exist
 
 In the vault:
 
-1. Reload Obsidian or disable and re-enable Temporary Global Graph Search.
+1. Reload Obsidian or disable and re-enable Global Graph Search.
 2. Open the global Graph View and confirm `papers/notes/` nodes are absent.
 3. Press `Ctrl+F`, type `EgoVerse-note`, and confirm that the note becomes searchable.
 4. Press `Escape` and confirm the four-directory graph returns without pasting the filter.

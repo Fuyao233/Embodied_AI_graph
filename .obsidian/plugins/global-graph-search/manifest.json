@@ -1,0 +1,9 @@
+{
+  "id": "global-graph-search",
+  "name": "Global Graph Search",
+  "version": "1.0.0",
+  "minAppVersion": "1.4.0",
+  "description": "Extends Ctrl+F to search every global graph node and restores the default filter on Escape.",
+  "author": "Local",
+  "isDesktopOnly": false
+}

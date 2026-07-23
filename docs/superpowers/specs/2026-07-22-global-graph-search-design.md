@@ -1,4 +1,4 @@
-# Temporary Global Graph Search Design
+# Global Graph Search Design
 
 ## Problem
 
@@ -64,7 +64,7 @@ Rejected because it changes the workflow, makes `Ctrl+F` context-dependent, dupl
 Create a standalone community plugin at:
 
 ```text
-.obsidian/plugins/temporary-global-graph-search/
+.obsidian/plugins/global-graph-search/
 ```
 
 The plugin has three logical units:
