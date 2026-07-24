@@ -11,4 +11,4 @@ title: "Infra"
 
 
 - [starVLA](../../papers/cards/starvla.md)：积木式VLA/WM框架
-- [WR](../readings/WR.md)
+- [WR](../readings/WR.md)：真机部署代码

@@ -3,7 +3,8 @@
   "search": "path:/^questions\\// OR path:/^papers\\/cards\\// OR path:/^codes\\/types\\// OR path:/^codes\\/readings\\//",
   "showTags": false,
   "showAttachments": false,
-  "hideUnresolved": true,  "showOrphans": false,
+  "hideUnresolved": true,
+  "showOrphans": false,
   "collapse-color-groups": false,
   "colorGroups": [
     {
@@ -42,9 +43,9 @@
   "lineSizeMultiplier": 2.26927083333333,
   "collapse-forces": false,
   "centerStrength": 0.213541666666667,
-  "repelStrength": 8.64583333333333,
+  "repelStrength": 9.79166666666667,
   "linkStrength": 0.630208333333333,
-  "linkDistance": 157,
-  "scale": 0.6666666666666576,
+  "linkDistance": 216,
+  "scale": 0.45050811767578125,
   "close": true
 }

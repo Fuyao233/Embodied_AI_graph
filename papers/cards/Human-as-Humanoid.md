@@ -17,7 +17,10 @@ created: 2026-07-21
 
 ## Core Insight
 
-
+- Embodiment alignment：形态对齐
+- Observation–motion compatibility：观察与运动恢复兼容
+- Action-interface alignment：动作接口对齐
+- Joint–task consistency：关节空间与任务空间一致
 
 
 
