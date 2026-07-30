@@ -148,25 +148,39 @@ test("reads and writes the visible search input without dispatching", () => {
   assert.equal(input.value, "next");
 });
 
-test("listens to and disposes visible search input events", () => {
+test("listens through the graph container when the search input is replaced", () => {
   const calls = [];
-  const listener = () => {};
-  const input = {
-    value: "",
-    focus() {},
-    addEventListener: (...args) => calls.push(["add", ...args]),
-    removeEventListener: (...args) => calls.push(["remove", ...args]),
+  const firstInput = { id: "first" };
+  const replacementInput = { id: "replacement" };
+  const unrelatedInput = { id: "unrelated" };
+  let currentInput = firstInput;
+  let delegatedListener = null;
+  const container = {
+    querySelector: () => currentInput,
+    addEventListener: (type, listener, capture) => {
+      calls.push(["add", type, capture]);
+      delegatedListener = listener;
+    },
+    removeEventListener: (type, listener, capture) => {
+      calls.push(["remove", type, listener, capture]);
+    },
   };
-  const graph = makeLeaf({ input });
+  const graph = makeLeaf();
+  graph.leaf.view.containerEl = container;
+  let notifications = 0;
   const adapter = new GraphAdapter({ workspace: {} });
 
-  const dispose = adapter.listenSearchInput(graph.leaf, listener);
+  const dispose = adapter.listenSearchInput(graph.leaf, () => {
+    notifications += 1;
+  });
+  currentInput = replacementInput;
+  delegatedListener({ target: unrelatedInput });
+  delegatedListener({ target: replacementInput });
   dispose();
 
-  assert.deepEqual(calls, [
-    ["add", "input", listener],
-    ["remove", "input", listener],
-  ]);
+  assert.equal(notifications, 1);
+  assert.deepEqual(calls[0], ["add", "input", true]);
+  assert.deepEqual(calls[1], ["remove", "input", delegatedListener, true]);
 });
 
 test("returns rendered markdown file IDs only", () => {
