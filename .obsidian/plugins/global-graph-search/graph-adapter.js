@@ -84,10 +84,16 @@ class GraphAdapter {
   }
 
   listenSearchInput(leaf, listener) {
-    const input = this.getSearchInput(leaf);
-    if (!input?.addEventListener || !input?.removeEventListener) return () => {};
-    input.addEventListener("input", listener);
-    return () => input.removeEventListener("input", listener);
+    const container = leaf?.view?.containerEl;
+    if (!container?.addEventListener || !container?.removeEventListener) {
+      return () => {};
+    }
+    const delegatedListener = (event) => {
+      if (event.target === this.getSearchInput(leaf)) listener(event);
+    };
+    container.addEventListener("input", delegatedListener, true);
+    return () =>
+      container.removeEventListener("input", delegatedListener, true);
   }
 
   getRenderedFileIds(leaf) {

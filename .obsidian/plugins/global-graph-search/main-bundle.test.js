@@ -162,15 +162,11 @@ test("bundled plugin shows orphans, expands one-hop matches, and restores state"
   const source = fs.readFileSync(mainPath, "utf8");
   const pluginModule = { exports: {} };
   const registrations = [];
-  const inputListeners = new Map();
+  const containerListeners = new Map();
   const updates = [];
   const input = {
     value: "default-filter",
     focus() {},
-    addEventListener: (type, listener) => inputListeners.set(type, listener),
-    removeEventListener: (type, listener) => {
-      if (inputListeners.get(type) === listener) inputListeners.delete(type);
-    },
   };
   const options = {
     search: "default-filter",
@@ -221,7 +217,16 @@ test("bundled plugin shows orphans, expands one-hop matches, and restores state"
         },
       },
       renderer,
-      containerEl: { querySelector: () => input },
+      containerEl: {
+        querySelector: () => input,
+        addEventListener: (type, listener) =>
+          containerListeners.set(type, listener),
+        removeEventListener: (type, listener) => {
+          if (containerListeners.get(type) === listener) {
+            containerListeners.delete(type);
+          }
+        },
+      },
     },
   };
   const workspace = {
@@ -262,7 +267,7 @@ test("bundled plugin shows orphans, expands one-hop matches, and restores state"
     assert.equal(options.showOrphans, true);
 
     input.value = "A";
-    inputListeners.get("input")();
+    containerListeners.get("input")({ target: input });
     await new Promise((resolve) => setImmediate(resolve));
 
     assert.equal(
