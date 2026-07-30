@@ -413,3 +413,16 @@ RTC的效果：
 - 能适应高延迟情况
 - 提升 wall-clock 速度
 - 改善实际控制质量
+
+
+
+RTC 时间轴：
+$$
+\begin{aligned}
+\text{chunk }k\text{ 开始推理} &: I_k\\
+\text{chunk }k\text{ 推理完成} &: I_k+d\\
+\text{chunk }k+1\text{ 开始推理} &: I_k+s\\
+\text{chunk }k+1\text{ 推理完成} &: I_k+s+d
+\end{aligned}
+$$
+s 是不同 chunk 开始推理的时间间隔，所以其实每个 chunk 实际执行的步数是 s+d

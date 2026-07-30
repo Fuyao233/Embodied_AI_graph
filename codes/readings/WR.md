@@ -325,7 +325,7 @@ Topic 规定了信息交换的格式
 
 ## 部署
 
-#### Inference
+### Inference
 
 
 
@@ -453,7 +453,7 @@ eval sync
 
 
 
-#### serve_res
+### serve_res
 
 分为 gr00t 和 pi 两种，负责链接模型和推理，主要功能是 `get_action`
 
@@ -482,6 +482,24 @@ POST 到 self.predict_url
                         ▼
 返回 {"mocap": [action_np]}, info_dict
 ```
+
+
+
+
+
+## 通信线路
+
+![image-20260727175136476](/home/caiyinghao/桌面/Embodied_AI_graph/codes/readings/WR.assets/image-20260727175136476.png)
+
+
+
+## 监听
+
+![image-20260727175512786](/home/caiyinghao/桌面/Embodied_AI_graph/codes/readings/WR.assets/image-20260727175512786.png)
+
+source_timestamp_ns：每次发送 command 的时间，和 send-fps 对应
+
+receive_monotonic_ns：GAE 会定时发送自身状态，这个频率是 50Hz
 
 
 

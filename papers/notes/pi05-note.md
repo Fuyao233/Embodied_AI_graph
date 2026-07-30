@@ -526,7 +526,201 @@ NVIDIA Pro 6000 跑 pi0_base, 显存占用约8GB，约30s跑完一个task的50 e
 
 
 
+## Serving
 
+```mermaid
+flowchart TD
+    %% =========================
+    %% 入口与配置
+    %% =========================
+
+    A["Flask 请求入口<br/>
+    src/openpi/serving/flask_server_g1_with_hands.py:163"] --> B["llm_robot.policy.infer&#40;data, ...&#41;"]
+
+    C["训练配置<br/>
+    src/openpi/training/config.py:3412"] --> C1["Pi0Config<br/>
+    pi05 = True<br/>
+    use_G1_dataset = True<br/>
+    claws_separation = True<br/>
+    action_dim = 102<br/>
+    hand_action_dim = 12<br/>
+    state_horizon = 5"]
+
+    %% =========================
+    %% Policy 加载
+    %% =========================
+
+    subgraph LOAD["Policy 与模型加载"]
+        L1["create_trained_policy&#40;&#41;<br/>
+        src/openpi/policies/policy_config.py:16"] --> L2{"checkpoint 中存在<br/>model.safetensors？"}
+
+        L2 -- "是" --> L3["train_config.model.load_pytorch&#40;&#41;<br/>
+        src/openpi/policies/policy_config.py:48"]
+
+        L3 --> L4["创建 PI0Pytorch&#40;config&#41;<br/>
+        src/openpi/models/model.py:248"]
+
+        L4 --> L5["safetensors.torch.load_model&#40;<br/>
+        model, weight_path&#41;"]
+
+        L5 --> L6["构造 Policy<br/>
+        sample_actions = PI0Pytorch.sample_actions"]
+    end
+
+    C --> L1
+    L6 --> B
+
+    %% =========================
+    %% 输入预处理
+    %% =========================
+
+    subgraph INPUT["输入预处理"]
+        I1["原始输入 data"] --> I2["G1WithHandsInputs<br/>
+        src/openpi/policies/g1_policy.py:78"]
+
+        I2 --> I3["图像字段映射<br/>
+        front_head → base_0_rgb<br/>
+        left_hand → left_wrist_0_rgb<br/>
+        right_hand → right_wrist_0_rgb"]
+
+        I2 --> I4["状态字段处理<br/>
+        arm state：35 维<br/>
+        hand state：12 维<br/>
+        history：5 帧"]
+
+        I2 --> I5["prompt 语言输入"]
+
+        I3 --> I6["图像缩放至 224 × 224"]
+        I4 --> I7["state 编码 / token 化"]
+        I5 --> I8["prompt token 化"]
+
+        I6 --> I9["input transforms 输出"]
+        I7 --> I9
+        I8 --> I9
+    end
+
+    A --> I1
+    I9 --> B
+
+    %% =========================
+    %% Policy.infer
+    %% =========================
+
+    subgraph POLICY["Policy.infer 外层逻辑"]
+        P1["Policy.infer&#40;&#41;<br/>
+        src/openpi/policies/policy.py:87"] --> P2["执行 input transforms"]
+
+        P2 --> P3["添加 batch 维度"]
+        P3 --> P4["转换为 CUDA Tensor"]
+        P4 --> P5["准备上一轮动作<br/>frozen_action_num<br/>freeze_source_end"]
+
+        P5 --> P6["self._sample_actions&#40;...&#41;<br/>
+        src/openpi/policies/policy.py:145"]
+
+        P6 --> P7["实际调用<br/>
+        PI0Pytorch.sample_actions&#40;&#41;"]
+    end
+
+    B --> P1
+
+    %% =========================
+    %% sample_actions 路径分流
+    %% =========================
+
+    subgraph ROUTE["sample_actions 推理路径分流"]
+        R1["PI0Pytorch.sample_actions&#40;&#41;<br/>
+        src/openpi/models_pytorch/pi0_pytorch.py:943"] --> R2{"use_G1_dataset<br/>且<br/>claws_separation？"}
+
+        R2 -- "True && True" --> R3["sample_g1_actions_with_hands&#40;&#41;<br/>
+        src/openpi/models_pytorch/pi0_pytorch.py:1112"]
+
+        R2 -- "否则" --> R4["普通 sample_actions 推理路径<br/>当前配置不会进入"]
+    end
+
+    P7 --> R1
+    C1 -. "决定分流条件" .-> R2
+
+    %% =========================
+    %% G1 双 expert 推理
+    %% =========================
+
+    subgraph G1["G1 手臂与手部分离推理"]
+        G1A["生成初始噪声"] --> G1B["arm_noise<br/>形状：[B, 50, 102]"]
+        G1A --> G1C["hand_noise<br/>形状：[B, 50, 12]"]
+
+        G1B --> G2["处理 image、language token、state"]
+        G1C --> G2
+
+        G2 --> G3["embed_prefix&#40;&#41;"]
+        G3 --> G4["PaliGemma 编码<br/>三路图像 + 语言"]
+        G4 --> G5["构造 suffix 输入<br/>state + action noise + time"]
+
+        G5 --> G6["根据上一轮动作<br/>构造冻结区域"]
+        G6 --> G7["初始化<br/>arm_x_t = arm_noise<br/>hand_x_t = hand_noise"]
+
+        G7 --> LOOP
+    end
+
+    R3 --> G1A
+
+    %% =========================
+    %% 去噪循环
+    %% =========================
+
+    subgraph LOOP["10 步 Flow-Matching 去噪循环"]
+        D1["for step_i in range&#40;num_steps&#41;<br/>
+        src/openpi/models_pytorch/pi0_pytorch.py:1224"] --> D2["计算当前时间 t 与步长 dt"]
+
+        D2 --> D3["denoise_step_with_g1_actions_with_hands&#40;&#41;<br/>
+        src/openpi/models_pytorch/pi0_pytorch.py:1399"]
+
+        D3 --> D4["Arm Expert<br/>预测 arm_v_t<br/>[B, 50, 102]"]
+
+        D3 --> D5["Hand Expert<br/>预测 hand_v_t<br/>[B, 50, 12]"]
+
+        D4 --> D6["应用冻结区域约束"]
+        D5 --> D6
+
+        D6 --> D7["arm_x_t = arm_x_t + dt × arm_v_t"]
+        D6 --> D8["hand_x_t = hand_x_t + dt × hand_v_t"]
+
+        D7 --> D9{"完成 10 步？"}
+        D8 --> D9
+
+        D9 -- "否" --> D1
+        D9 -- "是" --> D10["得到去噪后的<br/>arm actions 与 hand actions"]
+    end
+
+    %% =========================
+    %% 输出处理
+    %% =========================
+
+    subgraph OUTPUT["输出拼接、拆分与返回"]
+        O1["拼接动作<br/>
+        concat&#40;arm_x_t, hand_x_t, dim=-1&#41;"] --> O2["模型原始输出<br/>[B, 50, 114]"]
+
+        O2 --> O3["返回 Policy.infer"]
+        O3 --> O4["output transforms"]
+
+        O4 --> O5["拆分动作<br/>
+        src/openpi/transforms.py:1322"]
+
+        O5 --> O6["arm_actions = actions[..., :102]<br/>形状：[B, 50, 102]"]
+
+        O5 --> O7["hand_actions = actions[..., 102:114]<br/>形状：[B, 50, 12]"]
+
+        O6 --> O8["移除 batch 维度"]
+        O7 --> O8
+
+        O8 --> O9["Flask 获得结果<br/>
+        result['actions']：(50, 102)<br/>
+        result['hand_actions']：(50, 12)"]
+    end
+
+    D10 --> O1
+```
+
+ 目前 openpi 的手是单独 DiT 控制的，GR00T 中是用 MLP 做的，因为当初只讨论说要和控制身体的权重分开但是并没有统一架构 [2026/7/28]
 
 
 
@@ -571,7 +765,7 @@ https://zhuanlan.zhihu.com/p/647109286
   - Pi0.5: 引入AdaRMS
 - 对于状态信息的处理：
   - Pi0: 将state信息经过nn.Linear映射后拼接
-  - Pi0.5: 直接舍弃
+  - Pi0.5: 将状态离散化然后作为文本输入到 VLM 中，action expert 不再接受
 
 
 
