@@ -54,6 +54,20 @@ class RepositoryFileTests(unittest.TestCase):
             ],
         )
 
+    def test_persistent_graph_does_not_restore_empty_graph_options(self) -> None:
+        source = (
+            REPO_ROOT / ".obsidian" / "plugins" / "persistent-graph" / "main.js"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn(
+            's&&s.hasOwnProperty("search")&&t.view.dataEngine.setOptions',
+            source,
+        )
+        self.assertNotIn(
+            'a={};s&&s.hasOwnProperty("search")&&(a=s),t.view.dataEngine.setOptions',
+            source,
+        )
+
     def test_global_graph_search_plugin_is_installed_and_enabled(self) -> None:
         plugin_dir = REPO_ROOT / ".obsidian" / "plugins" / GRAPH_SEARCH_PLUGIN_ID
         manifest = json.loads(
