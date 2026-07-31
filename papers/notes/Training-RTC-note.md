@@ -44,7 +44,7 @@ RTC 提出了一套异步执行框架，也是本文工作的基础。SmolVLA �
 
 ### Method
 
-![image-20260720112534255](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/Training-RTC-note.assets/image-20260720112534255.png)
+![image-20260720112534255](Training-RTC-note.assets/image-20260720112534255.png)
 
 - $o_t$：控制器在时刻 $t$ 获得的观测；
 - $a_t$：某一个控制周期的动作；

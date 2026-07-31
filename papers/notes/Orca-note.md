@@ -11,7 +11,7 @@ created: 2026-07-07
 
 ## Reading Notes
 
-![image-20260707155504232](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/Orca-note.assets/image-20260707155504232.png)
+![image-20260707155504232](Orca-note.assets/image-20260707155504232.png)
 
 主要架构就是这种先预训练 encoder 然后在下游任务上冻结再训练一个任务对应的 readout，主要创新在预训练方法上
 
@@ -19,7 +19,7 @@ created: 2026-07-07
 
 ### Pretraining
 
-![image-20260708093959848](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/Orca-note.assets/image-20260708093959848.png)
+![image-20260708093959848](Orca-note.assets/image-20260708093959848.png)
 $$
 S_{t+\Delta} \sim p_{\Theta}\left(S_{t+\Delta}\mid S_t, z_t, c_t\right), \quad \Delta \in \mathbb{Z}_{\ne 0}
 $$
@@ -67,7 +67,7 @@ L_evt = 1/2 [ previous-event latent matching + next-event latent matching ], 同
 
 **数据组织**：
 
-![image-20260708102209096](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/Orca-note.assets/image-20260708102209096.png)
+![image-20260708102209096](Orca-note.assets/image-20260708102209096.png)
 
 标注清洗过滤细节？
 
@@ -79,11 +79,11 @@ L_evt = 1/2 [ previous-event latent matching + next-event latent matching ], 同
 
 #### Effectiveness and Scaling Behavior
 
-![image-20260708104504862](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/Orca-note.assets/image-20260708104504862.png)
+![image-20260708104504862](Orca-note.assets/image-20260708104504862.png)
 
 这一部分回答 Question 1.1：随着模型大小和数据规模增加，Orca 的学习范式是否有效。实验比较 0.8B 和 4B 两种规模，横轴是预训练视频小时数，纵轴是总 loss。结果是总 loss 随数据规模持续下降，且 4B 模型比 0.8B 获得更低 objective loss。作者据此认为 Orca 的学习范式可以有效构建 world latent，而且还没有快速收敛，继续增加数据和模型规模仍有收益。
 
-![image-20260708104545754](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/Orca-note.assets/image-20260708104545754.png)
+![image-20260708104545754](Orca-note.assets/image-20260708104545754.png)
 
 这一部分回答 Question 1.2：更强的预训练 latent 是否能带来更强的下游 readout。作者从 Orca-0.8B 和 Orca-4B 的预训练过程中取多个 checkpoint，分别接到文本、图像、动作 readout 上做 probe；文本分数是 TemporalBench、MVBench、SWITCH、3DRSBench 平均，图像是 PRICE-V0.1 平均，动作是五个真实机器人 OOD 任务平均。结果显示，随着预训练数据增加，文本、图像、动作 readout 都提升
 
@@ -95,7 +95,7 @@ L_evt = 1/2 [ previous-event latent matching + next-event latent matching ], 同
 
 **Text Generation**
 
-![image-20260708105206579](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/Orca-note.assets/image-20260708105206579.png)
+![image-20260708105206579](Orca-note.assets/image-20260708105206579.png)
 
 
 
@@ -128,7 +128,7 @@ B
 
 **Image Prediction**
 
-![image-20260708110444187](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/Orca-note.assets/image-20260708110444187.png)
+![image-20260708110444187](Orca-note.assets/image-20260708110444187.png)
 
 **PRICE-V0.1 = Prediction of Real-world Interactions with Constraints Evaluation**。
 
@@ -181,7 +181,7 @@ JSON only:
 
 指标分两类：一是 rule-based score，把每个任务拆成关键阶段，统计终止前最高完成阶段；二是 PRM-as-a-Judge 的轨迹级诊断，包括 M25、M50、SR、MaxP-F、FNS、DRR、SQS 等，用于衡量进度、成功率、失败前进展和恢复能力。
 
-![image-20260708111546010](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/Orca-note.assets/image-20260708111546010.png)
+![image-20260708111546010](Orca-note.assets/image-20260708111546010.png)
 
 和$\pi_{0.5}$打得有来有会
 
@@ -191,7 +191,7 @@ JSON only:
 
 #### Ablation Study
 
-![image-20260708112528249](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/Orca-note.assets/image-20260708112528249.png)
+![image-20260708112528249](Orca-note.assets/image-20260708112528249.png)
 
 比较难绷，本文最大创新是 event-conditioned based transition，但是发现去掉这个 loss 之后反而 action generation 上升，text generation也没掉多少，仅仅只是image prediction这个训练对应的任务不能做 :laughing:	
 

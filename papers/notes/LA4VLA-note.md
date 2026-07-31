@@ -36,7 +36,7 @@ LA4VLA，这是一个构建显式“语言-动作”（LA）监督信号并将�
 
 
 
-![image-20260707103116735](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/LA4VLA-note.assets/image-20260707103116735.png)
+![image-20260707103116735](LA4VLA-note.assets/image-20260707103116735.png)
 
 
 
@@ -166,13 +166,13 @@ SS和SR都是基于末端位移量来算的：对每个预测 action chunk，先
 
 可视化：
 
-![image-20260707110047552](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/LA4VLA-note.assets/image-20260707110047552.png)
+![image-20260707110047552](LA4VLA-note.assets/image-20260707110047552.png)
 
 
 
 ### Language-Action Dataset Construction
 
-![image-20260707110411236](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/LA4VLA-note.assets/image-20260707110411236.png)
+![image-20260707110411236](LA4VLA-note.assets/image-20260707110411236.png)
 
 这部分讲的是如何构建LA dataset: 把原来稀疏的高层语言监督，变成更密集的 atomic language-action supervision
 
@@ -346,11 +346,11 @@ instruction + proprioceptive state → action trajectory
 
 **原子动作设计：**
 
-![image-20260707112215140](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/LA4VLA-note.assets/image-20260707112215140.png)
+![image-20260707112215140](LA4VLA-note.assets/image-20260707112215140.png)
 
 **数据集统计**：
 
-![image-20260707112241611](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/LA4VLA-note.assets/image-20260707112241611.png)
+![image-20260707112241611](LA4VLA-note.assets/image-20260707112241611.png)
 
 
 
@@ -360,9 +360,9 @@ instruction + proprioceptive state → action trajectory
 
 Performance on MetaWorld & LIBERO & Real-world
 
-![image-20260707114154458](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/LA4VLA-note.assets/image-20260707114154458.png)
+![image-20260707114154458](LA4VLA-note.assets/image-20260707114154458.png)
 
-![image-20260707114222937](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/LA4VLA-note.assets/image-20260707114222937.png)
+![image-20260707114222937](LA4VLA-note.assets/image-20260707114222937.png)
 
 
 
@@ -374,7 +374,7 @@ MixPT: 混训
 
 **视觉扰动鲁棒性**
 
-![image-20260707114800677](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/LA4VLA-note.assets/image-20260707114800677.png)
+![image-20260707114800677](LA4VLA-note.assets/image-20260707114800677.png)
 
 在真实机器人上加 **Gaussian image noise**。结论很直接：**LA 和 MixPT 在视觉退化时保持更高成功率。**这支持作者的核心假设：LA 预训练减少了 policy 对视觉 shortcut 的过度依赖，使动作预测更受语言和动作 prior 控制。
 
@@ -384,7 +384,7 @@ MixPT: 混训
 
 **指令跟随和表征分析**
 
-![image-20260707114943495](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/LA4VLA-note.assets/image-20260707114943495.png)
+![image-20260707114943495](LA4VLA-note.assets/image-20260707114943495.png)
 
-![image-20260707115003033](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/LA4VLA-note.assets/image-20260707115003033.png)
+![image-20260707115003033](LA4VLA-note.assets/image-20260707115003033.png)
 

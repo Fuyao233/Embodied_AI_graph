@@ -21,7 +21,7 @@ created: 2026-05-14
 
 知识隔离的核心思想是，在利用离散化动作微调VLM骨干网络的同时，让动作专家生成连续动作（例如，通过流匹配或扩散），而无需将其梯度传播回VLM骨干网络
 
-<img src=".\KI-note.assets\image-20260514182500171.png" alt="image-20260514182500171" style="zoom:50%;" />
+<img src="./KI-note.assets/image-20260514182500171.png" alt="image-20260514182500171" style="zoom:50%;" />
 
 
 

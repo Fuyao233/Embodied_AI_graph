@@ -76,5 +76,5 @@ VLABench 通过专门针对基础模型应该擅长的评估领域来解决这�
 
 
 
-![image-20260626151419743](/home/caiyinghao/.config/Typora/typora-user-images/image-20260626151419743.png)
+![image-20260626151419743](VLABench-note.assets/image-20260626151419743.png)
 

@@ -38,9 +38,9 @@ created: 2026-05-29
 
 ### Method
 
-![image-20260721115332004](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/RTC-note.assets/image-20260721115332004.png)
+![image-20260721115332004](RTC-note.assets/image-20260721115332004.png)
 
-![image-20260721143950131](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/RTC-note.assets/image-20260721143950131.png)
+![image-20260721143950131](RTC-note.assets/image-20260721143950131.png)
 
 等价变换：
 $$
@@ -160,7 +160,7 @@ $$
 
 $\frac{1-\tau}{\tau r_\tau^2}$ 形态：
 
-![image-20260721144537788](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/RTC-note.assets/image-20260721144537788.png)
+![image-20260721144537788](RTC-note.assets/image-20260721144537788.png)
 
 RTC 使用梯度引导，让新生成的动作块与上一动作块保持连续。原始引导系数在去噪起点 $τ=0$ 会趋于无穷，因此作者引入上限 $β$。
 
@@ -183,9 +183,9 @@ RTC 使用梯度引导，让新生成的动作块与上一动作块保持连续�
 
 
 
-![image-20260721134131746](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/RTC-note.assets/image-20260721134131746.png)
+![image-20260721134131746](RTC-note.assets/image-20260721134131746.png)
 
-![image-20260721134142637](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/RTC-note.assets/image-20260721134142637.png)
+![image-20260721134142637](RTC-note.assets/image-20260721134142637.png)
 
 
 
@@ -241,7 +241,7 @@ RTC 使用梯度引导，让新生成的动作块与上一动作块保持连续�
 
 ##### 结果分析
 
-![image-20260721154349491](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/RTC-note.assets/image-20260721154349491.png)
+![image-20260721154349491](RTC-note.assets/image-20260721154349491.png)
 
 **推理延迟增加**
 

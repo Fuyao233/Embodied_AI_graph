@@ -489,13 +489,13 @@ POST 到 self.predict_url
 
 ## 通信线路
 
-![image-20260727175136476](/home/caiyinghao/桌面/Embodied_AI_graph/codes/readings/WR.assets/image-20260727175136476.png)
+![image-20260727175136476](WR.assets/image-20260727175136476.png)
 
 
 
 ## 监听
 
-![image-20260727175512786](/home/caiyinghao/桌面/Embodied_AI_graph/codes/readings/WR.assets/image-20260727175512786.png)
+![image-20260727175512786](WR.assets/image-20260727175512786.png)
 
 source_timestamp_ns：每次发送 command 的时间，和 send-fps 对应
 

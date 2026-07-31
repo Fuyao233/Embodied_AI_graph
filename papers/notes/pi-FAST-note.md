@@ -44,7 +44,7 @@ created: 2026-06-26
 
 ### Case study
 
-![image-20260629142652127](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/pi-FAST-note.assets/image-20260629142652127.png)
+![image-20260629142652127](pi-FAST-note.assets/image-20260629142652127.png)
 
 构建一个合成时间序列数据集，目标是预测一条穿过四个随机生成点的三次样条曲线
 
@@ -70,7 +70,7 @@ FAST的处理其实是参考`连续时间序列`领域的压缩方法
 
 文中提到，任何足够有效的压缩方法，只要应用于动作目标，都有助于提升 VLA（视觉-语言-动作）模型的训练速度
 
-![image-20260630151811072](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/pi-FAST-note.assets/image-20260630151811072.png)
+![image-20260630151811072](pi-FAST-note.assets/image-20260630151811072.png)
 
 
 
@@ -307,7 +307,7 @@ FAST 首次实现了在 DROID 数据集上训练出可在**未见环境中zero-s
 
 #### Data Mixture for Training Universal Tokenizer
 
-![image-20260630163529707](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/pi-FAST-note.assets/image-20260630163529707.png)
+![image-20260630163529707](pi-FAST-note.assets/image-20260630163529707.png)
 
 选用的都是1s时长的action chunk，既有EE又有关节角
 

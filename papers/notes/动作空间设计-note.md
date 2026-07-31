@@ -15,9 +15,9 @@ created: 2026-07-01
 
 
 
-![image-20260701135957482](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/动作空间设计-note.assets/image-20260701135957482.png)
+![image-20260701135957482](动作空间设计-note.assets/image-20260701135957482.png)
 
-![image-20260701140237082](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/动作空间设计-note.assets/image-20260701140237082.png)
+![image-20260701140237082](动作空间设计-note.assets/image-20260701140237082.png)
 
 
 
@@ -105,7 +105,7 @@ created: 2026-07-01
 
 基于回归的标准策略在单臂AgileX平台上执行三项基础任务（触碰方块、拾取杯子、拾取并放置杯子）时的性能表现:（此处用的ACT,其他的模型见附录F）
 
-![image-20260701151720022](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/动作空间设计-note.assets/image-20260701151720022.png)
+![image-20260701151720022](动作空间设计-note.assets/image-20260701151720022.png)
 
 实验结果表明，在所有任务中，分块式增量动作的表现均持续且显著优于逐步式增量动作。值得注意的是，两者的平均性能差距超过10%；这一显著差异凸显了对齐参考系（alignment frame）选择的重要性。
 
@@ -119,7 +119,7 @@ created: 2026-07-01
 
 **INTERPLAY WITH HORIZON k**
 
-![image-20260701152354712](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/动作空间设计-note.assets/image-20260701152354712.png)
+![image-20260701152354712](动作空间设计-note.assets/image-20260701152354712.png)
 
 绝对控制（absolute control）受益于显著更长的时域长度，而增量控制（delta control）的效果则在较短的时域长度下达到峰值。说明相对表征对执行漂移（execution drift）较为敏感。在某些任务中，即使是绝对动作也存在一个饱和点，此时增加执行时域长度已无法带来显著的性能提升。
 
@@ -135,7 +135,7 @@ created: 2026-07-01
 
 
 
-![image-20260701153850563](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/动作空间设计-note.assets/image-20260701153850563.png)
+![image-20260701153850563](动作空间设计-note.assets/image-20260701153850563.png)
 
 
 
@@ -172,7 +172,7 @@ created: 2026-07-01
 
 这一部分是逐渐增大数据规模和训练时长观察表现
 
-![image-20260701164523219](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/动作空间设计-note.assets/image-20260701164523219.png)
+![image-20260701164523219](动作空间设计-note.assets/image-20260701164523219.png)
 
 上图汇总了 AgileX 平台上针对四项设计任务进行单任务学习的结果，这些结果清晰地展示了在不同资源预算下动作抽象性能的表现
 
@@ -190,7 +190,7 @@ created: 2026-07-01
 
 **ADVANCED LEARNING REGIMES**
 
-![image-20260701164912098](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/动作空间设计-note.assets/image-20260701164912098.png)
+![image-20260701164912098](动作空间设计-note.assets/image-20260701164912098.png)
 
 cross-embodiment：
 

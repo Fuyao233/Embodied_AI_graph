@@ -13,7 +13,7 @@ created: 2026-07-08
 
 
 
-![image-20260708142937033](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/EmbodiedBench-note.assets/image-20260708142937033.png)
+![image-20260708142937033](EmbodiedBench-note.assets/image-20260708142937033.png)
 
 EmbodiedBench 包含 **1,128 个测试任务、4 个环境**，覆盖从 high-level semantic tasks 到 low-level navigation/manipulation；同时构造 **6 个能力子集**，评估 common sense、complex instruction、spatial awareness、visual perception、long-term planning 等能力
 
@@ -41,7 +41,7 @@ EB-Manipulation  低层机械臂操作
 
 评测流程：
 
-![image-20260708143118958](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/EmbodiedBench-note.assets/image-20260708143118958.png)
+![image-20260708143118958](EmbodiedBench-note.assets/image-20260708143118958.png)
 
 是一个循环：环境给观察和反馈 → 模型生成计划 → 环境执行 → 返回新观察、反馈和历史 → 模型继续规划
 

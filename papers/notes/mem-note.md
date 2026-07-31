@@ -85,7 +85,7 @@ created: 2026-05-12
 
 ### Method
 
-![image-20260514140859904](.\mem-note.assets\image-20260514140859904.png)
+![image-20260514140859904](./mem-note.assets/image-20260514140859904.png)
 $$
 \pi(a_{t:t+H}, l_{t+1}, m_{t+1}\mid o_{t-T:t}, m_t, g)
 \approx
@@ -134,7 +134,7 @@ $$
 
 根据之前的研究（如RTC），推理一个action chunk的时间最好不要超过300ms，否则机器人会出现严重的滞后
 
-![image-20260513104148747](.\mem-note.assets\image-20260513104148747.png)
+![image-20260513104148747](./mem-note.assets/image-20260513104148747.png)
 
 引入temporal attention，每隔四层在同 patch 不同时刻进行时序注意力计算，最后取当前时刻帧
 

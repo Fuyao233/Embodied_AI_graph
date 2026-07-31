@@ -53,7 +53,7 @@ EgoHumanoid 的定位：**将无需机器人的人类第一人称示教数据作
 
 ### Framework
 
-![image-20260724134827429](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/EgoHumanoid-note.assets/image-20260724134827429.png)
+![image-20260724134827429](EgoHumanoid-note.assets/image-20260724134827429.png)
 
 ```
 人类第一视角示范 ──┐
@@ -440,7 +440,7 @@ VLA 输出的是高层末端和移动命令，真正的：
 
 ### EVALUATIONS
 
-![image-20260724135911660](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/EgoHumanoid-note.assets/image-20260724135911660.png)
+![image-20260724135911660](EgoHumanoid-note.assets/image-20260724135911660.png)
 
 | 任务             | 过程                                   | 主要难点                           |
 | ---------------- | -------------------------------------- | ---------------------------------- |
@@ -461,7 +461,7 @@ VLA 输出的是高层末端和移动命令，真正的：
 
 
 
-![image-20260724140931670](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/EgoHumanoid-note.assets/image-20260724140931670.png)
+![image-20260724140931670](EgoHumanoid-note.assets/image-20260724140931670.png)
 
 - robot-only: 100 条 robot episodes
 - co-training: 100 条 robot episodes + 300 条 human episodes
@@ -474,7 +474,7 @@ VLA 输出的是高层末端和移动命令，真正的：
 
 #### Which subskill benefits most from data transfer?
 
-![image-20260724142547451](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/EgoHumanoid-note.assets/image-20260724142547451.png)
+![image-20260724142547451](EgoHumanoid-note.assets/image-20260724142547451.png)
 
 
 
@@ -557,7 +557,7 @@ Cart Stowing 的 s2 是：
 
 #### Does Performance Scale with Human Data?
 
-![image-20260724142941362](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/EgoHumanoid-note.assets/image-20260724142941362.png)
+![image-20260724142941362](EgoHumanoid-note.assets/image-20260724142941362.png)
 
 只能说有一些上升趋势，论文声称的都上升严重夸大，并不能说明 scaling law.
 

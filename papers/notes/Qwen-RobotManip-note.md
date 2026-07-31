@@ -13,7 +13,7 @@ created: 2026-07-08
 
 
 
-![image-20260708151840137](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/Qwen-RobotManip-note.assets/image-20260708151840137.png)
+![image-20260708151840137](Qwen-RobotManip-note.assets/image-20260708151840137.png)
 
 这篇最大的亮点在如何将不同源数据联合起来训练
 

@@ -23,13 +23,13 @@ created: 2026-05-13
 
 浅层 VLA 中 **action tokens 到 visual tokens 的 attention** 来识别 ROI visual tokens。发现底层VLA对于任务相关的物体关注度高，但是高层VLA则因为要生成动作更偏向整合后的任务语义和动作意图，suo'yi'dui关注度不够
 
-![image-20260513160137906](D:\Embodied_AI_graph\papers\notes\agvp-note.assets\image-20260513160137906.png)
+![image-20260513160137906](agvp-note.assets/image-20260513160137906.png)
 
 
 
 ## 模型架构
 
-![image-20260513155957965](D:\Embodied_AI_graph\papers\notes\agvp-note.assets\image-20260513155957965.png)
+![image-20260513155957965](agvp-note.assets/image-20260513155957965.png)
 
 
 

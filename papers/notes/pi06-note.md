@@ -148,11 +148,11 @@ Inference的时候设置 $I_t=\text{positve}$
 
 ### IMPLEMENTATION, MODEL, AND SYSTEM DETAILS
 
-<img src=".\pi06-note.assets\image-20260513175558946.png" alt="image-20260513175558946" style="zoom: 67%;" />
+<img src="./pi06-note.assets/image-20260513175558946.png" alt="image-20260513175558946" style="zoom: 67%;" />
 
 metadata：文本化的任务上下文 / 条件控制信息，可能是执行风格或者环境条件等等，比较神秘（其实是 $\pi_{0.7}$ 的核心机制之一）
 
-<img src=".\pi06-note.assets\image-20260513173909964.png" alt="image-20260513173909964" style="zoom:50%;" />
+<img src="./pi06-note.assets/image-20260513173909964.png" alt="image-20260513173909964" style="zoom:50%;" />
 
 
 
@@ -256,9 +256,9 @@ AWR，即 Advantage-Weighted Regression：
 
 指标：成功率、吞吐量（每小时成功执行的任务数量）
 
-![image-20260710142921771](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/pi06-note.assets/image-20260710142921771.png)
+![image-20260710142921771](pi06-note.assets/image-20260710142921771.png)
 
-![image-20260710142947754](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/pi06-note.assets/image-20260710142947754.png)
+![image-20260710142947754](pi06-note.assets/image-20260710142947754.png)
 
 没加SFT但是仍有成功率是因为预训练中有过类似的数据
 
@@ -296,9 +296,9 @@ $$
 - 纸箱任务第一轮吞吐量反而下降，第二轮才明显上升，最终吞吐量约为初始策略的两倍。
 - 这说明复杂长时程任务需要更多数据，单轮更新出现性能波动并不罕见。
 
-![image-20260710143957571](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/pi06-note.assets/image-20260710143957571.png)
+![image-20260710143957571](pi06-note.assets/image-20260710143957571.png)
 
-![image-20260710144012836](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/pi06-note.assets/image-20260710144012836.png)
+![image-20260710144012836](pi06-note.assets/image-20260710144012836.png)
 
 
 
@@ -314,7 +314,7 @@ $$
 - AWR 可以获得合理成功率，但策略执行较慢，因此吞吐量较低。
 - RECAP 的 advantage-conditioned policy 在吞吐量上显著领先。
 
-![image-20260710144102816](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/pi06-note.assets/image-20260710144102816.png)
+![image-20260710144102816](pi06-note.assets/image-20260710144102816.png)
 
 
 
@@ -332,7 +332,7 @@ $$
 
 因此，RECAP 不仅能整体改善策略，还能像“行为补丁”一样，针对某个失败模式进行优化。
 
-![image-20260710145343496](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/pi06-note.assets/image-20260710145343496.png)
+![image-20260710145343496](pi06-note.assets/image-20260710145343496.png)
 
 这种strict criteria通过标注success label来影响模型行为
 

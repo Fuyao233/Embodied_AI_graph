@@ -40,7 +40,7 @@ created: 2026-07-17
 
 ### Framework
 
-![image-20260717114708439](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/HIL-SERL-note.assets/image-20260717114708439.png)
+![image-20260717114708439](HIL-SERL-note.assets/image-20260717114708439.png)
 
 ```
 少量人工示范

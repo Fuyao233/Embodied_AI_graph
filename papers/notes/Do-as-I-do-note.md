@@ -44,7 +44,7 @@ Sharpa Wave手和UR3e臂
 
 ### Related Works
 
-![image-20260702114147399](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/Do-as-I-do-note.assets/image-20260702114147399.png)
+![image-20260702114147399](Do-as-I-do-note.assets/image-20260702114147399.png)
 
 - Self：自己收集的数据
 - Gen：由生成式视频模型生成的

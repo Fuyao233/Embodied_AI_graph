@@ -428,7 +428,7 @@ EgoVerse 的目标是把问题从：
 
 ### Dataset
 
-![image-20260722180440943](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/EgoVerse-note.assets/image-20260722180440943.png)
+![image-20260722180440943](EgoVerse-note.assets/image-20260722180440943.png)
 
 1. **EgoVerse 是面向机器人学习的人类第一视角数据集**
     数据不仅有视频，还包括三维手部关键点、相机位姿、任务描述和场景信息，使人类操作能更容易转换为机器人学习信号。
@@ -446,7 +446,7 @@ EgoVerse 的目标是把问题从：
 
 
 
-<img src="/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/EgoVerse-note.assets/image-20260722180835087.png" alt="image-20260722180835087" style="zoom:50%;" />
+<img src="EgoVerse-note.assets/image-20260722180835087.png" alt="image-20260722180835087" style="zoom:50%;" />
 
 I 的数据多样性远大于 A
 
@@ -574,7 +574,7 @@ $$
 
 #### 模型怎样同时学习人和机器人数据
 
-![image-20260723111508827](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/EgoVerse-note.assets/image-20260723111508827.png)
+![image-20260723111508827](EgoVerse-note.assets/image-20260723111508827.png)
 
 共享输入：
 
@@ -626,7 +626,7 @@ $$
 
 #### Q1: 人类数据是否提升机器人性能？
 
-![image-20260723111520407](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/EgoVerse-note.assets/image-20260723111520407.png)
+![image-20260723111520407](EgoVerse-note.assets/image-20260723111520407.png)
 
 在大多数机器人和任务中，加入人类数据后：
 
@@ -703,7 +703,7 @@ Robot B 在 bag-grocery 任务中加入人类数据后出现性能下降。作�
 
 **Q1 中人类数据配比是 EV(8) + ID(2)， Q2主要讨论的是什么样的人类数据配比是合适的**
 
-![image-20260723114422623](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/EgoVerse-note.assets/image-20260723114422623.png)
+![image-20260723114422623](EgoVerse-note.assets/image-20260723114422623.png)
 
 
 
@@ -791,7 +791,7 @@ $$
 $$
 数值越低越好。它衡量的是人类动作预测泛化，不能直接等价于机器人成功率。
 
-![image-20260723115522504](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/EgoVerse-note.assets/image-20260723115522504.png)
+![image-20260723115522504](EgoVerse-note.assets/image-20260723115522504.png)
 
 | 子图                     | 训练变化                             | 验证对象                       |
 | ------------------------ | ------------------------------------ | ------------------------------ |
@@ -854,7 +854,7 @@ $$
 
 
 
-![image-20260723145509223](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/EgoVerse-note.assets/image-20260723145509223.png)
+![image-20260723145509223](EgoVerse-note.assets/image-20260723145509223.png)
 
 当训练示范者从 4 人增加到 12 人时，模型学到的 latent representation 对未见示范者的覆盖更好，因而更容易泛化到新的人。
 

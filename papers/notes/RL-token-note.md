@@ -157,13 +157,13 @@ $$
 
 ### Method
 
-![image-20260724171745388](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/RL-token-note.assets/image-20260724171745388.png)
+![image-20260724171745388](RL-token-note.assets/image-20260724171745388.png)
 
 
 
 #### A. Adapting the VLA to expose an RL interface
 
-![image-20260728165907801](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/RL-token-note.assets/image-20260728165907801.png)
+![image-20260728165907801](RL-token-note.assets/image-20260728165907801.png)
 
 这一阶段是在模型训练之后，强化学习训练之前，训练的时候冻结主模型。
 
@@ -347,7 +347,7 @@ $$
 
 
 
-![image-20260730115724019](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/RL-token-note.assets/image-20260730115724019.png)
+![image-20260730115724019](RL-token-note.assets/image-20260730115724019.png)
 
 
 
@@ -529,7 +529,7 @@ $\beta,N_{warm}$ ？
 
 ##### Q1：RLT 能否提升基础 VLA 的操作性能？
 
-![image-20260730135327850](/home/caiyinghao/桌面/Embodied_AI_graph/papers/notes/RL-token-note.assets/image-20260730135327850.png)
+![image-20260730135327850](RL-token-note.assets/image-20260730135327850.png)
 
 作者分别在**关键阶段**和**完整任务**两种设置下比较 RLT 与基础 VLA，并使用成功率和单位时间吞吐量作为指标。
 
