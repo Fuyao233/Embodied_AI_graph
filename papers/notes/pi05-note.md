@@ -850,7 +850,8 @@ https://zhuanlan.zhihu.com/p/647109286
 
 DDP默认的通信方式
 
-通信量：
+通信量：Haptic
+tactile
 
 <img src="./pi0.5.assets/image-20260322183608371.png" alt="image-20260322183608371" style="zoom:33%;" />
 
