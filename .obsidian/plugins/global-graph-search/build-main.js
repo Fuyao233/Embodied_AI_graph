@@ -3,6 +3,7 @@ const path = require("node:path");
 
 const moduleFiles = [
   "neighbor-expander.js",
+  "graph-link-filter.js",
   "graph-adapter.js",
   "search-expansion-controller.js",
   "session-controller.js",

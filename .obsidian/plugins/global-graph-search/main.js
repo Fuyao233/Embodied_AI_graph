@@ -43,6 +43,26 @@ module.exports = {
 };
 
 },
+"graph-link-filter.js": function(module, exports, require) {
+const CARD_PATH = /^papers\/cards\//;
+
+function filterCardToCardLinks(resolvedLinks) {
+  const filtered = {};
+  for (const [source, targets] of Object.entries(resolvedLinks || {})) {
+    filtered[source] = {};
+    for (const [target, count] of Object.entries(targets || {})) {
+      if (!(CARD_PATH.test(source) && CARD_PATH.test(target))) {
+        filtered[source][target] = count;
+      }
+    }
+  }
+  return filtered;
+}
+
+module.exports = { filterCardToCardLinks };
+
+
+},
 "graph-adapter.js": function(module, exports, require) {
 const SEARCH_INPUT_SELECTOR = [
   ".mod-search-setting input[type='text']",
@@ -427,6 +447,7 @@ module.exports = { SearchSessionController };
 "plugin-entry.js": function(module, exports, require) {
 const { Plugin } = require("obsidian");
 const { GraphAdapter } = require("./graph-adapter");
+const { filterCardToCardLinks } = require("./graph-link-filter");
 const { SearchSessionController } = require("./session-controller");
 const {
   SearchExpansionController,
@@ -439,10 +460,21 @@ const DEFAULT_SETTINGS = {
 };
 
 class GlobalGraphSearchPlugin extends Plugin {
+  filterGraphLinks() {
+    const resolvedLinks = this.app.metadataCache?.resolvedLinks;
+    if (!resolvedLinks || typeof resolvedLinks !== "object") return;
+
+    const filtered = filterCardToCardLinks(resolvedLinks);
+    for (const source of Object.keys(resolvedLinks)) delete resolvedLinks[source];
+    Object.assign(resolvedLinks, filtered);
+  }
+
   async onload() {
     const savedSettings = await this.loadData();
     this.settings = { ...DEFAULT_SETTINGS, ...(savedSettings || {}) };
     if (!savedSettings?.defaultFilter) await this.saveData(this.settings);
+
+    this.filterGraphLinks();
 
     this.adapter = new GraphAdapter({
       workspace: this.app.workspace,
@@ -471,9 +503,10 @@ class GlobalGraphSearchPlugin extends Plugin {
     );
     if (this.app.metadataCache?.on) {
       this.registerEvent(
-        this.app.metadataCache.on("resolved", () =>
-          this.expansionController.invalidateLinks(),
-        ),
+        this.app.metadataCache.on("resolved", () => {
+          this.filterGraphLinks();
+          this.expansionController.invalidateLinks();
+        }),
       );
     }
     this.app.workspace.onLayoutReady(() => this.controller.syncGraphs());
