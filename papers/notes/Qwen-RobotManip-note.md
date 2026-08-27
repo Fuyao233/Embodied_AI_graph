@@ -154,7 +154,7 @@ $$
 
 
 
-**通过 CaPE 注入相机内参**
+**通过 CaPE 注入相机外参**
 
 CaPE 来自 EscherNet 的 Camera Positional Encoding。EscherNet 的核心观点是：在 3D 视觉里，token 的“位置”不是文本中的第几个词，而是**相机位姿**；两个视角之间的关系只依赖它们的**相对相机变换**，而不依赖某个任意的全局坐标系。EscherNet 论文也明确说，CaPE 让 key/query 的 attention map 学习 relative camera poses，并且不依赖 specific coordinate systems。
 
@@ -176,6 +176,8 @@ $$
 
 CaPE 并非本文原创，而是引自 [EscherNet: A Generative Model for Scalable View Synthesis](https://arxiv.org/pdf/2402.03908)
 
+这个具体做法就是比如现在要进行 32 维的 CaPE 注入，则取可学习向量 $q_{\text{CaPE}}\in \R ^{32}$ 然后 reshape 得到 $8\times 4$ 矩阵，之后与 $P_i^{-1}P_j$ 相乘再 flatten 回来
+
 
 
 CaPE 注入在 DiT **action expert** 的 cross-attention layers(因为内参是和画面相关的) 中。它在每个 64D attention head 中占 32D，用来编码 camera pose；剩下 32D 继续用 RoPE 编码时间位置。
@@ -196,17 +198,26 @@ DiT action expert block
 
 
 
+**内参注入**
 
+将每个视觉 patch 的归一化图像平面坐标通过一个可学习的线性层进行投影，并将其添加到对应的图像 token 中，从而为每个 token 提供视场感知能力
+
+这个归一化应该指的是
+$$
+x=\frac{u-c_x}{f_x},\qquad
+y=\frac{v-c_y}{f_y}
+$$
+这个注入是在 VLM 端
 
 
 
 希望学习一种**跨视角的泛化**，能够把相机内参作为条件，理解不同视角下相同的动作
 
+**其实这里补充的内参外参还有多视角信息已经足够模型进行 3D 重建了**
 
 
 
-
-#### 
+ 
 
 ### 数据预处理总结
 
@@ -223,8 +234,12 @@ Qwen-Manip（Qwen-RobotManip）的数据预处理目标是将不同机器人、�
 人类手部数据统一表示为：
 
 - MANO 手部参数
+
 - 21 个三维手部关键点
+
 - 左右手及其可见性信息
+
+  
 
 #### 2. 人类动作重定向
 
@@ -246,6 +261,10 @@ Qwen-Manip（Qwen-RobotManip）的数据预处理目标是将不同机器人、�
 - 不同人类视频数据按比例下采样
 
 下采样用于降低人手动作速度，使单位时间内的动作幅度更接近真实机器人数据。
+
+（**这步其实跟他们retarget的做法有很大关系**）
+
+
 
 #### 4. 状态与动作数据清洗
 
@@ -371,6 +390,8 @@ Human-to-Robot 动作重定向
 用于多机器人联合训练
 ```
 
+
+
 #### 总结
 
 Qwen-Manip 的数据预处理并不只是常规的数据清洗，而是一套完整的**跨机器人本体对齐机制**，重点解决四类问题：
@@ -381,3 +402,16 @@ Qwen-Manip 的数据预处理并不只是常规的数据清洗，而是一套完
 4. **语义对齐**：确保语言、视频、状态和动作描述的是同一操作。
 
 其核心观点是：**机器人数据规模只有建立在物理语义一致的基础上，才能有效转化为模型能力。**
+
+
+
+### 提示词模板
+
+```
+embodiment: robot_aloha
+instruction: Take the toy off the table and put it on the mat.
+speed: 1000
+fps: 30
+camera view direction: arm side
+```
+
