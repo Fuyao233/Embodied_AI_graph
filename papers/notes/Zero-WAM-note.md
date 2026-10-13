@@ -285,3 +285,4 @@ baselines：
 text-only Zero-WAM: 保留全部 ICL 样本，只把 human-video latent mask 掉，让每个 human-robot pair 退化成一条普通的语言条件 video-action 样本
 
 这个模型是为了和 LingBot-VA 对比：LingBot-VA（原始分布、无 human video）17.45% → text-only Zero-WAM（task-balanced 数据、无 human video）39.44% 
+
